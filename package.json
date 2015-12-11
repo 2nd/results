@@ -1,0 +1,9 @@
+{
+  "author": "Second Spectrum",
+  "name": "analytics_results",
+  "version": "0.0.1",
+  "dependencies": {
+    "stylus": "^0.52.4",
+    "coffee-script": "^1.10.0"
+  }
+}
