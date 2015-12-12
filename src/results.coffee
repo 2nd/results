@@ -6,7 +6,24 @@ locale =
 class Results
   constructor: (@ele) ->
 
-  show: (rows) ->
+  show: (rows,ind) ->
+    week = 1
+    if ind?
+      switch ind
+        when "Mon"
+          week = 2
+        when "Tue"
+          week = 3
+        when "Wed"
+          week = 4
+        when "Thu"
+          week = 5
+        when "Fri"
+          week = 6
+        when "Sat"
+          week = 0
+        when "Sun"
+          week = 1
     fields = rows.pop()
     zero = fields[0]
 
@@ -22,20 +39,25 @@ class Results
       header += "<th#{@seal(settings[i], false)}>" + name
 
     html = ''
-    last = 0
+    last = 6
     index = 0
-    for row, i in rows
+    before = -1
+    for row, i in rows.reverse()
       d = new Date(row[0])
+      console.log(day,before)
       day = d.getDay()
-      if day > last ||  i == 0
+      if (day+1)%7==week && day != before || i ==0
+        #console.log(day,before)
+      #if day < last ||  i == 7
         html +=
         switch zero.filter
           when 'day'
             '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-          when 'hour'
+           when 'hour'
             '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-
         index = 0
+      before = day
+
       last = day
 
       html += '<tr' + (if index % 2 == 1 then ' class=o' else '') + '><td class=filter>'
