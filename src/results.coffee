@@ -24,24 +24,53 @@ class Results
     html = ''
     last = 0
     index = 0
+    count = 0
+    lastDate = 0
+    firstLine = 0
     for row, i in rows
       d = new Date(row[0])
       day = d.getDay()
-      if day > last ||  i == 0
-        html +=
-        switch zero.filter
-          when 'day'
-            '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-          when 'hour'
-            '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
+      date = d.getDate()
 
-        index = 0
-      last = day
+      if firstLine == 0
+        html +=
+            switch zero.filter
+              when 'day'
+                '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
+              when 'hour'
+                '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
+        firstLine = 1
+
+      console.log day,last,date,lastDate,count
+      if (day > last || count >= 22) && count > 7
+        if count >= 19 && count <=22
+          if date != lastDate
+            html +=
+            switch zero.filter
+              when 'day'
+                count = 0
+                '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
+              when 'hour'
+                '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
+            last = day
+
+        else
+          html +=
+          switch zero.filter
+            when 'day'
+              count = 0
+              '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
+              
+            when 'hour'
+              '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
+          last = day
+
 
       html += '<tr' + (if index % 2 == 1 then ' class=o' else '') + '><td class=filter>'
       html +=
       switch zero.filter
         when 'day'
+          
           "<span>" + locale.weekdays[day] + ' ' + d.getDate() + '</span>'
         when 'hour'
           "<span>" + d.getHours() + ':00</span>'
@@ -58,10 +87,13 @@ class Results
         else
             html += '<td>' + value
       index++
+      lastDate = date
+      count++
 
     @settings = settings
     @ele.classes('-focus')
     @ele.innerHTML = html
+    #@ele.innerHTML = 'hello'
     @cells = $(@ele, 'td')
     @fields = fields.length
     null
