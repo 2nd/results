@@ -33,40 +33,36 @@ class Results
       date = d.getDate()
 
       console.log day,last,date,lastDate,count
-      if (day > last || i == 0 && count >= 7) || count >22
+      if (day > last || i == 0 && count >= 7) || count >=21
+        last = day
         if count >= 19 
           if date != lastDate
             html +=
             switch zero.filter
               when 'day'
                 count = 0
-                i = 1
                 '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
               when 'hour'
                 '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-
+              
         else
           html +=
           switch zero.filter
             when 'day'
               count = 0
-              i = 1
               '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
               
             when 'hour'
               '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-        last = day
-
+            
 
       html += '<tr' + (if index % 2 == 1 then ' class=o' else '') + '><td class=filter>'
       html +=
       switch zero.filter
         when 'day'
-          
           "<span>" + locale.weekdays[day] + ' ' + d.getDate() + '</span>'
         when 'hour'
           "<span>" + d.getHours() + ':00</span>'
-
 
       for i in [1...row.length]
         value = row[i]
