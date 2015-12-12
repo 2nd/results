@@ -3,10 +3,11 @@ locale =
   months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
+weekdayIndex = {'Sun':6, 'Mon':5, 'Tue':4, 'Wed':3, 'Thu':2, 'Fri':1, 'Sat':0}
 class Results
   constructor: (@ele) ->
 
-  show: (rows) ->
+  show: (rows, weekday) ->
     fields = rows.pop()
     zero = fields[0]
 
@@ -27,7 +28,8 @@ class Results
     for row, i in rows
       d = new Date(row[0])
       day = d.getDay()
-      if day > last ||  i == 0
+      remain = (day + weekdayIndex[weekday]) % 7
+      if remain > last ||  i == 0
         html +=
         switch zero.filter
           when 'day'
@@ -36,7 +38,7 @@ class Results
             '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
 
         index = 0
-      last = day
+      last = remain
 
       html += '<tr' + (if index % 2 == 1 then ' class=o' else '') + '><td class=filter>'
       html +=
