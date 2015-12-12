@@ -1,3 +1,7 @@
 node_modules/
 lib/
+<<<<<<< HEAD
 .DS_Store/
+=======
+.DS_Store
+>>>>>>> 0c7ce615b6d0472717e053d6a86e13b04c640004

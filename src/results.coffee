@@ -32,38 +32,30 @@ class Results
       day = d.getDay()
       date = d.getDate()
 
-      if firstLine == 0
-        html +=
-            switch zero.filter
-              when 'day'
-                '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-              when 'hour'
-                '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-        firstLine = 1
-
       console.log day,last,date,lastDate,count
-      if (day > last || count >= 22) && count > 7
-        if count >= 19 && count <=22
+      if (day > last || i == 0 && count >= 7) || count >22
+        if count >= 19 
           if date != lastDate
             html +=
             switch zero.filter
               when 'day'
                 count = 0
+                i = 1
                 '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
               when 'hour'
                 '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-            last = day
 
         else
           html +=
           switch zero.filter
             when 'day'
               count = 0
+              i = 1
               '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
               
             when 'hour'
               '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-          last = day
+        last = day
 
 
       html += '<tr' + (if index % 2 == 1 then ' class=o' else '') + '><td class=filter>'
