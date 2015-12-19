@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
 <link rel=stylesheet href="lib/results.css">
-<script src="lib/framework.js"></script>
-<script src="lib/results.js"></script>
+<!-- <script src="lib/framework.js"></script>
+<script src="lib/results.js"></script> -->
+<script src="lib/test.js"></script>
 <script src="sample1.js"></script>
 <script src="sample2.js"></script>
 <script src="sample3.js"></script>
@@ -10,6 +11,10 @@
 <table id=results></table>
 
 <script>
-results = new window.Results(document.getElementById('results'));
-results.show(sample1, 'Fri');
+window.build(sample2)
 </script>
+
+<!-- <script>
+results = new window.Results(document.getElementById('results'));
+results.show(sample1)
+</script> -->
