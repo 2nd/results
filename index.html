@@ -3,6 +3,7 @@
 <link rel=stylesheet href="lib/results.css">
 <script src="lib/framework.js"></script>
 <script src="lib/results.js"></script>
+<script src="lib/showByMode.js"></script>
 <script src="sample1.js"></script>
 <script src="sample2.js"></script>
 <script src="sample3.js"></script>
@@ -12,4 +13,7 @@
 <script>
 results = new window.Results(document.getElementById('results'));
 results.show(sample3)
+
+results1 = new window.ResultShow(document.getElementById('results'));
+results1.showByMode()
 </script>

@@ -19,7 +19,7 @@ class Results
         settings[i] = field
         name = field.name
         zero.parent = i
-      header += "<th#{@seal(settings[i], false)}>" + name
+      header += "<th>" + name
 
     html = ''
     last = 0
