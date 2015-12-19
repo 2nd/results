@@ -20,6 +20,7 @@ class Results
         name = field.name
         zero.parent = i
       header += "<th#{@seal(settings[i], false)}>" + name
+      console.log(name)
 
     html = ''
     last = 0
