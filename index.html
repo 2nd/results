@@ -4,6 +4,8 @@
 <script src="lib/framework.js"></script>
 <script src="lib/add_new.js"></script>
 <script src="lib/results.js"></script>
+
+<script src="lib/test.js"></script>
 <script src="sample1.js"></script>
 <script src="sample2.js"></script>
 <script src="sample3.js"></script>
@@ -11,6 +13,10 @@
 <table id=results></table>
 
 <script>
+window.build(sample3)
+window.calcPrectage(valueDic)
+window.assignStyle(sample3, valuePrecDay, valuePrecWeek, columnLi, dateLi)
+
 results = new window.Results(document.getElementById('results'));
-results.show(sample3)
+results.show(valuePrecWeekStyle, "Fri", filters)
 </script>
