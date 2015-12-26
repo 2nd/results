@@ -7,7 +7,8 @@ class Results
   constructor: (@ele) ->
 
   show: (rows) ->
-    fields = rows.pop()
+    fields = rows[rows.length - 1]
+    #console.log fields
     zero = fields[0]
 
     header = ''
