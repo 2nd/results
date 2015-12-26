@@ -4,6 +4,7 @@ locale =
   weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 weekdayIndex = {'Sun':6, 'Mon':5, 'Tue':4, 'Wed':3, 'Thu':2, 'Fri':1, 'Sat':0}
 
+weekdayIndex = {'Sun':6, 'Mon':5, 'Tue':4, 'Wed':3, 'Thu':2, 'Fri':1, 'Sat':0}
 class Results
   constructor: (@ele) ->
 
@@ -21,6 +22,7 @@ class Results
         name = field.name
         zero.parent = i
       header += "<th#{@seal(settings[i], false)}>" + name
+      console.log(name)
 
     html = ''
     last = 0

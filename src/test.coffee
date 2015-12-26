@@ -64,7 +64,7 @@ window.build = (sample) ->
     Value[key]=ary
 
     totalName = []
-    for field,i in fields
+    for field,i in fields 
       if field.filter
         totalName.push field.name
       else
@@ -138,9 +138,6 @@ window.assignStyle = (sample, valuePrecDay, valuePrecWeek, columnLi, dateLi) ->
   window.valuePrecDayStyle = valuePrecDayStyle
   window.valuePrecWeekStyle = valuePrecWeekStyle
   window.filters = filters
-
-
-
 
 
 
