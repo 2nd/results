@@ -80,7 +80,7 @@ class Results
               else if styl == "worse"
                 html += '<td class=worse>' + value + '<svg width="10px" height="20px"><defs><marker id="arrow" markerWidth="3" markerHeight="6" refx="0" refy="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L2.5,3 z" fill="#33CC99" /></marker></defs><line x1="5" y1="4" x2="5" y2="16" stroke="#33CC99" stroke-width="1.6" marker-end="url(#arrow)" /></svg>';
               else
-                html += '<td>' + value 
+                html += '<td>' + value
         index++
       else
         for i in [1...row.length]
@@ -106,5 +106,7 @@ class Results
     cls += ' filter' if data && settings.filter
     attributes += ' class="' + cls + '"' if cls.length != 0
     attributes
+
+
 
 window.Results = Results

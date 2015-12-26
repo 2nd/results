@@ -64,7 +64,7 @@ window.build = (sample) ->
     Value[key]=ary
 
     totalName = []
-    for field,i in fields 
+    for field,i in fields
       if field.filter
         totalName.push field.name
       else
@@ -76,68 +76,55 @@ window.build = (sample) ->
   window.dateLi = concensusDay
 
 
-window.calcPrectage = (valueDic) ->
-  valuePrecDay = JSON.parse(JSON.stringify(valueDic))
-  valuePrecWeek = JSON.parse(JSON.stringify(valueDic))
-  for key of valueDic
-    for column of valueDic[key]
-      for i in [0...valueDic[key][column].length].reverse()
-        today = valuePrecDay[key][column][i]
-        yersterday = valuePrecDay[key][column][i-1]
-        lastWeek = valuePrecDay[key][column][i-7]
-        if yersterday
-          valuePrecDay[key][column][i] = (today - yersterday) / yersterday
-        else
-          valuePrecDay[key][column][i] = "na"
-        if lastWeek
-          valuePrecWeek[key][column][i] = (today - lastWeek) / lastWeek
-        else
-          valuePrecWeek[key][column][i] = "na"
-  window.valuePrecDay = valuePrecDay
-  window.valuePrecWeek = valuePrecWeek
+window.valueDicTest =
+  'error$uncaught': 'total': [10,2,3,4,5], 'avg':[6, 7,8,9,10]
+  'sections$carousel': 'total': [20, 12, 13, 14, 15], 'avg':[16, 17, 18, 19, 20]
+  'sections$hiring' : 'total': [50, 22, 24, 24, 25], 'avg': [26, 27, 28, 29, 30]
 
+largerBetter = ['total']
+littleBetter = ['avg', 'stddev', '95', '99']
+defineStyle = (column, value) ->
+  if largerBetter.indexOf(column) != -1
+    value = - value
+  if value > 0
+    return 'better'
+  else if value <0
+    return 'worse'
+  return 'none' # ['Worse', 'Better', 'normal']
 
-window.assignStyle = (sample, valuePrecDay, valuePrecWeek, columnLi, dateLi) ->
-  largerBetter = ["total", "users", "sessions", "avg sec¹", "avg ms","95 ms","99 ms", "avg sec", "new"]
-  smallerBetter = ["bounce", "stddev", "95 sec", "99 sec","stddev¹", "avg", "95", "99" ]
-  valuePrecDayStyle = JSON.parse(JSON.stringify(sample))
-  valuePrecWeekStyle = JSON.parse(JSON.stringify(sample))
-  for ele,i in dateLi
-    dateLi[i] = String(ele)
-  filters = columnLi.pop()
-  console.log sample.length
-  for row, rowInd in sample.slice(0,sample.length-1)
-    console.log rowInd
-    console.log valuePrecDayStyle[sample.length-1]
-    day = String(new Date(row[0]))
-    key = ''
-    if filters == 1
-      key = "undefine"
-    else
-      for i in [1...filters]
-        key += row[i]+"$"
-      key = key.substring(0,key.length-1)
-
-    for ind in [filters...row.length]
-      valuePrecDayStyle[rowInd][ind] = [valuePrecDay[key][columnLi[ind]][dateLi.indexOf(day)]]
-      if (columnLi[ind] in largerBetter and valuePrecDay[key][columnLi[ind]][dateLi.indexOf(day)] > 0) or (columnLi[ind] in smallerBetter and valuePrecDay[key][columnLi[ind]][dateLi.indexOf(day)] < 0)
-        valuePrecDayStyle[rowInd][ind].push "better"
-      else if (columnLi[ind] in largerBetter and valuePrecDay[key][columnLi[ind]][dateLi.indexOf(day)] < 0) or (columnLi[ind] in smallerBetter and valuePrecDay[key][columnLi[ind]][dateLi.indexOf(day)] > 0)
-        valuePrecDayStyle[rowInd][ind].push "worse"
-      else
-        valuePrecDayStyle[rowInd][ind].push "none"
-
-      valuePrecWeekStyle[rowInd][ind] = [valuePrecWeek[key][columnLi[ind]][dateLi.indexOf(day)]]
-      if (columnLi[ind] in largerBetter and valuePrecWeek[key][columnLi[ind]][dateLi.indexOf(day)] > 0) or (columnLi[ind] in smallerBetter and valuePrecWeek[key][columnLi[ind]][dateLi.indexOf(day)] < 0)
-        valuePrecWeekStyle[rowInd][ind].push "better"
-      else if (columnLi[ind] in largerBetter and valuePrecWeek[key][columnLi[ind]][dateLi.indexOf(day)] < 0) or (columnLi[ind] in smallerBetter and valuePrecWeek[key][columnLi[ind]][dateLi.indexOf(day)] > 0)
-        valuePrecWeekStyle[rowInd][ind].push "worse"
-      else
-        valuePrecWeekStyle[rowInd][ind].push "none"
-
-  window.valuePrecDayStyle = valuePrecDayStyle
-  window.valuePrecWeekStyle = valuePrecWeekStyle
-  window.filters = filters
-
-
-
+window.calculateTrend = (inputValueDic) ->
+  dayValueDic = {}
+  weekValueDic = {}
+  dayStyleDic = {}
+  weekStyleDic = {}
+  todayStyleDic = {}
+  for regKey, value of inputValueDic
+    dayValueDic[regKey] = {}
+    weekValueDic[regKey] = {}
+    dayStyleDic[regKey] = {}
+    weekStyleDic[regKey] = {}
+    todayStyleDic[regKey] = {}
+    for colKey, colArray of value  # column key , column array
+      dayCompare = []
+      weekCompare = []
+      dayStyle = []
+      weekStyle =[]
+      todayStyle = ['none']
+      for i in [0...colArray.length-1] by 1
+        tempvalue = (colArray[i] - colArray[i+1])/(colArray[i+1] + 1)  # colArray[i+1]  might be 0
+        dayCompare.push(tempvalue)
+        dayStyle.push(defineStyle(colKey, tempvalue))
+        todayStyle.push('none')
+      dayValueDic[regKey][colKey] = dayCompare
+      dayStyleDic[regKey][colKey] = dayStyle
+      todayStyleDic[regKey][colKey] = todayStyle
+      for i in [0...colArray.length-7] by 1
+        tempvalue = (colArray[i] - colArray[i+7])/(colArray[i+7]+1)
+        weekStyle.push(defineStyle(colKey, tempvalue))
+        weekCompare.push(tempvalue)
+      weekValueDic[regKey][colKey] = weekCompare
+      weekStyleDic[regKey][colKey] = weekStyle
+  M0 = {valueDic: inputValueDic, styleDic: todayStyleDic}
+  M1 = {valueDic: dayValueDic, styleDic: dayStyleDic}
+  M2 = {valueDic: weekValueDic, styleDic: weekStyleDic}
+  return [M0, M1, M2]
