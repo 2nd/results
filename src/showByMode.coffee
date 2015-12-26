@@ -7,41 +7,6 @@ locale =
 
 
 dateFilter = 'day'
-M0 =
-  valueDic: 
-    'error$uncaught': 'total': [1,2,3,4,5], 'age':[6, 7,8,9,10]
-    'sections$carousel': 'total': [11, 12, 13, 14, 15], 'age':[16, 17, 18, 19, 20]
-    'sections$hiring' : 'total': [21, 22, 24, 24, 25], 'age': [26, 27, 28, 29, 30]
-  
-  styleDic: 
-    'error$uncaught': 'total': ['Better1','Worse2','Worse3','Better4','Worse5'], 'age':['Worse6', 'Worse7','Better8','Worse9','Better10']
-    'sections$carousel': 'total': ['Better11', 'Worse12', 'Better13', 'Worse14', 'Worse15'], 'age':['Better16', 'Worse17', 'Better18', 'Worse19', 'Worse20']
-    'sections$hiring' : 'total': ['Better21', 'Worse22', 'Worse23', 'Worse24', 'Better25'], 'age': ['Worse26', 'Better27', 'Worse28', 'Worse29', 'Worse30']
-  
-M1 =
-  valueDic: 
-    'error$uncaught': 'total': [1,2,3,4,5], 'age':[6, 7,8,9,10]
-    'sections$carousel': 'total': [11, 12, 13, 14, 15], 'age':[16, 17, 18, 19, 20]
-    'sections$hiring' : 'total': [21, 22, 24, 24, 25], 'age': [26, 27, 28, 29, 30]
-  
-  styleDic: 
-    'error$uncaught': 'total': ['Better','Worse','Worse','Better','Worse'], 'age':['Worse', 'Worse','Better','Worse','Better']
-    'sections$carousel': 'total': ['Better', 'Worse', 'Better', 'Worse', 'Worse'], 'age':['Better', 'Worse', 'Better', 'Worse', 'Worse']
-    'sections$hiring' : 'total': ['Better', 'Worse', 'Worse', 'Worse', 'Better'], 'age': ['Worse', 'Better', 'Worse', 'Worse', 'Worse']
-  
-M2 =
-  valueDic: 
-    'error$uncaught': 'total': [1,2,3,4,5], 'age':[6, 7,8,9,10]
-    'sections$carousel': 'total': [11, 12, 13, 14, 15], 'age':[16, 17, 18, 19, 20]
-    'sections$hiring' : 'total': [21, 22, 24, 24, 25], 'age': [26, 27, 28, 29, 30]
-  
-  styleDic: 
-    'error$uncaught': 'total': ['Better','Worse','Worse','Better','Worse'], 'age':['Worse', 'Worse','Better','Worse','Better']
-    'sections$carousel': 'total': ['Better', 'Worse', 'Better', 'Worse', 'Worse'], 'age':['Better', 'Worse', 'Better', 'Worse', 'Worse']
-    'sections$hiring' : 'total': ['Better', 'Worse', 'Worse', 'Worse', 'Better'], 'age': ['Worse', 'Better', 'Worse', 'Worse', 'Worse']
-data = [M0,M1,M2] 
-dateLi = ['2015-12-10T16:00:00.000Z', '2015-12-09T16:00:00.000Z', '2015-12-08T16:00:00.000Z', '2015-12-07T16:00:00.000Z','2015-12-06T16:00:00.000Z']
-columnLi = ['date', 'type','name','total','avg','stddev','95','99',3]
 
 
 class ResultShow
@@ -63,9 +28,10 @@ class ResultShow
     html = ''
     console.log index
     valuesAfterCal = data[index].valueDic
-    #console.log values
+
+    console.log 'valuesAfterCal:  '+ valuesAfterCal
     stylesAfterCal = data[index].styleDic
-    #console.log fields
+    console.log 'stylesAfterCal:  '+ stylesAfterCal
     zero = fields[0]
 
     header = ''
@@ -84,7 +50,8 @@ class ResultShow
     index = 0
     for row, i in rows
       d = new Date(row[0])
-      dayIndex = dateLi.indexOf(row[0])
+      dayIndex = dateLi.indexOf(String(d))
+      console.log dayIndex
       day = d.getDay()
       if day > last ||  i == 0
         html +=
@@ -108,7 +75,9 @@ class ResultShow
 
       for i in [1...row.length]
         value = row[i]
-        columnKey = columnLi[i-1]
+        columnIndex = i - 1 + columnLi[columnLi.length - 1]
+        console.log columnIndex
+        columnKey = columnLi[columnIndex]
         console.log 'columnKey:' + columnKey
 
         if i == 1
@@ -116,7 +85,6 @@ class ResultShow
         if s = settings[i]
           html += "<td#{@seal(s, true)}>"
           if s.filter
-
             #console.log 'now is the if s.filter case:' + value
             if currentKeys == ''
               currentKeys += value
@@ -125,21 +93,35 @@ class ResultShow
             #console.log "currentKeys: " + currentKeys
             html += '<span>' + value + '</span>'
           else
-            for keyAfterCal , valueAfterCal of valuesAfterCal
-              #console.log "keyAfterCal:" + keyAfterCal + "currentKeys: " + currentKeys
-              if keyAfterCal == currentKeys
-                console.log 'valueAfterCal.columnKey:' + valueAfterCal.columnKey
-                html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal.columnKey[dayIndex]
-                break;
+            html += value
+            # for keyAfterCal , valueAfterCal of valuesAfterCal
+            #   #console.log "keyAfterCal:" + keyAfterCal + "currentKeys: " + currentKeys
+            #   if keyAfterCal == currentKeys
+            #     console.log 'columnKey:' + columnKey
+
+            #     #console.log 'valueAfterCal.columnKey.length:' + valueAfterCal.columnKey.length
+            #     for element in valueAfterCal
+            #       console.log 'element in valueAfterCal:' + element                
+            #     html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal.columnKey[dayIndex]
+            #     break;
         else
             #console.log 'now is the else settings case:' + value
             for keyAfterCal , valueAfterCal of valuesAfterCal
               #console.log "keyAfterCal:" + keyAfterCal + "currentKeys: " + currentKeys
               if keyAfterCal == currentKeys
+                console.log 'keyAfterCal:' + keyAfterCal
                 console.log 'columnKey:' + columnKey
-                console.log 'valueAfterCal.columnKey:' + valueAfterCal.columnKey
-                html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal.columnKey[dayIndex]
-                break;
+                console.log 'stylesAfterCal:' + stylesAfterCal
+                console.log 'stylesAfterCal.keyAfterCal:' + stylesAfterCal[keyAfterCal]
+
+                console.log 'stylesAfterCal.keyAfterCal[columnKey]  '+stylesAfterCal[keyAfterCal][columnKey]
+
+                html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueAfterCal[columnKey][dayIndex]
+                # for valueKeyAfterCal,valueValueAfterCal in valueAfterCal
+                #   if valueKeyAfterCal == columnKey
+                #     html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal[columnKey][dayIndex]
+                #     break
+                break
 
       index++
 
