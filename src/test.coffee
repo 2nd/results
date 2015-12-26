@@ -82,7 +82,7 @@ defineStyle = (column, value) ->
     value = - value
   if value > 0
     return 'better'
-  if value <0
+  if value < 0
     return 'worse'
   return 'none' # ['Worse', 'Better', 'normal']
 
