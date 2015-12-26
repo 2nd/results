@@ -22,7 +22,6 @@ class Results
         name = field.name
         zero.parent = i
       header += "<th#{@seal(settings[i], false)}>" + name
-      console.log(name)
 
     html = ''
     last = 0
@@ -50,7 +49,6 @@ class Results
         when 'hour'
           "<span>" + d.getHours() + ':00</span>'
 
-      console.log filters
       for i in [1...filters]
         value = row[i]
         if s = settings[i]

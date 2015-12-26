@@ -12,10 +12,11 @@
 <table id=results></table>
 
 <script>
-window.build(sample3)
+
+window.build(sample2)
 window.calcPrectage(valueDic)
-window.assignStyle(sample3, valuePrecDay, valuePrecWeek, columnLi, dateLi)
+window.assignStyle(sample2, valuePrecDay, valuePrecWeek, columnLi, dateLi)
 
 results = new window.Results(document.getElementById('results'));
-results.show(valuePrecWeekStyle, "Fri", filters)
+results.show(sample2, "Fri")
 </script>
