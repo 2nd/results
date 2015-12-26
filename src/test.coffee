@@ -75,12 +75,6 @@ window.build = (sample) ->
   window.columnLi = totalName
   window.dateLi = concensusDay
 
-
-window.valueDicTest =
-  'error$uncaught': 'total': [10,2,3,4,5], 'avg':[6, 7,8,9,10]
-  'sections$carousel': 'total': [20, 12, 13, 14, 15], 'avg':[16, 17, 18, 19, 20]
-  'sections$hiring' : 'total': [50, 22, 24, 24, 25], 'avg': [26, 27, 28, 29, 30]
-
 largerBetter = ['total']
 littleBetter = ['avg', 'stddev', '95', '99']
 defineStyle = (column, value) ->
@@ -91,6 +85,19 @@ defineStyle = (column, value) ->
   else if value <0
     return 'worse'
   return 'none' # ['Worse', 'Better', 'normal']
+
+calculatePercent = (colKey, colArray,compareIndex) ->
+  dayCompare = []
+  dayStyle = []
+  colArray = colArray.reverse()
+  for i in [0...colArray.length-compareIndex] by 1
+    tempvalue = (colArray[i] - colArray[i+compareIndex])/(colArray[i+compareIndex] + 1)  # colArray[i+1]  might be 0
+    dayCompare.push(tempvalue)
+    dayStyle.push(defineStyle(colKey, tempvalue))
+  for i in [0...compareIndex] by 1
+      dayStyle.push('none')
+      dayCompare.push('na')
+  return [dayCompare.reverse(), dayStyle.reverse()]
 
 window.calculateTrend = (inputValueDic) ->
   dayValueDic = {}
@@ -105,25 +112,11 @@ window.calculateTrend = (inputValueDic) ->
     weekStyleDic[regKey] = {}
     todayStyleDic[regKey] = {}
     for colKey, colArray of value  # column key , column array
-      dayCompare = []
-      weekCompare = []
-      dayStyle = []
-      weekStyle =[]
-      todayStyle = ['none']
-      for i in [0...colArray.length-1] by 1
-        tempvalue = (colArray[i] - colArray[i+1])/(colArray[i+1] + 1)  # colArray[i+1]  might be 0
-        dayCompare.push(tempvalue)
-        dayStyle.push(defineStyle(colKey, tempvalue))
-        todayStyle.push('none')
-      dayValueDic[regKey][colKey] = dayCompare
-      dayStyleDic[regKey][colKey] = dayStyle
-      todayStyleDic[regKey][colKey] = todayStyle
-      for i in [0...colArray.length-7] by 1
-        tempvalue = (colArray[i] - colArray[i+7])/(colArray[i+7]+1)
-        weekStyle.push(defineStyle(colKey, tempvalue))
-        weekCompare.push(tempvalue)
-      weekValueDic[regKey][colKey] = weekCompare
-      weekStyleDic[regKey][colKey] = weekStyle
+      todayStyleDic[regKey][colKey] = []
+      for i in [0...colArray.length] by 1
+        todayStyleDic[regKey][colKey].push('none')
+      [dayValueDic[regKey][colKey], dayStyleDic[regKey][colKey]] = calculatePercent(colKey, colArray, 1)
+      [weekValueDic[regKey][colKey], weekStyleDic[regKey][colKey]] = calculatePercent(colKey, colArray, 7)
   M0 = {valueDic: inputValueDic, styleDic: todayStyleDic}
   M1 = {valueDic: dayValueDic, styleDic: dayStyleDic}
   M2 = {valueDic: weekValueDic, styleDic: weekStyleDic}
