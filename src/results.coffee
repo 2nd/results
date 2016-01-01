@@ -8,14 +8,11 @@ weekdayIndex = {'Sun':6, 'Mon':5, 'Tue':4, 'Wed':3, 'Thu':2, 'Fri':1, 'Sat':0}
 class Results
   constructor: (@ele) ->
 
-<<<<<<< HEAD
   show: (rows) ->
     fields = rows[rows.length - 1]
     #console.log fields
-=======
   show: (rows, weekday, filters) ->
     fields = rows.pop()
->>>>>>> origin/testCoffee
     zero = fields[0]
 
     header = ''
@@ -27,12 +24,9 @@ class Results
         settings[i] = field
         name = field.name
         zero.parent = i
-<<<<<<< HEAD
       header += "<th>" + name
-=======
       header += "<th#{@seal(settings[i], false)}>" + name
       console.log(name)
->>>>>>> origin/testCoffee
 
     html = ''
     last = 0

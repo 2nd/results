@@ -3,9 +3,6 @@
 locale =
   months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
-
-
 dateFilter = 'day'
 
 
@@ -14,24 +11,26 @@ class ResultShow
 
   showByMode: (rows) ->
     list = ['M0','M1','M2']
-    index = 0
+    modeIndex = 0
+    @showTable(rows,modeIndex)
+
     document.onkeydown = (e) =>
       return unless e.keyCode == 77
-      index++
-      index = 0 if index == list.length
-      @showTable(rows,index)
+      modeIndex++
+      modeIndex = 0 if modeIndex == list.length
+      @showTable(rows,modeIndex)
 
-  showTable: (rows,index)->
+  showTable: (rows,modeIndex)->
 
     fields = rows[rows.length - 1]
-    console.log 'fields:   '+ fields
+    #console.log 'fields:   '+ fields
     html = ''
-    console.log index
-    valuesAfterCal = data[index].valueDic
+    #console.log index
+    valuesAfterCal = data[modeIndex].valueDic
 
-    console.log 'valuesAfterCal:  '+ valuesAfterCal
-    stylesAfterCal = data[index].styleDic
-    console.log 'stylesAfterCal:  '+ stylesAfterCal
+    #console.log 'valuesAfterCal:  '+ valuesAfterCal
+    stylesAfterCal = data[modeIndex].styleDic
+    #console.log 'stylesAfterCal:  '+ stylesAfterCal
     zero = fields[0]
 
     header = ''
@@ -49,9 +48,10 @@ class ResultShow
     last = 0
     index = 0
     for row, i in rows
+      break unless i < rows.length - 1 
       d = new Date(row[0])
       dayIndex = dateLi.indexOf(String(d))
-      console.log dayIndex
+      console.log 'dayIndex:     '+dayIndex
       day = d.getDay()
       if day > last ||  i == 0
         html +=
@@ -74,9 +74,12 @@ class ResultShow
 
 
       for i in [1...row.length]
+        console.log 'i:   '+i
+
         value = row[i]
-        columnIndex = i - 1 + columnLi[columnLi.length - 1]
-        console.log columnIndex
+        console.log 'value:   '+value
+        columnIndex = i
+        console.log 'columnIndex:   '+columnIndex
         columnKey = columnLi[columnIndex]
         console.log 'columnKey:' + columnKey
 
@@ -109,14 +112,31 @@ class ResultShow
             for keyAfterCal , valueAfterCal of valuesAfterCal
               #console.log "keyAfterCal:" + keyAfterCal + "currentKeys: " + currentKeys
               if keyAfterCal == currentKeys
-                console.log 'keyAfterCal:' + keyAfterCal
-                console.log 'columnKey:' + columnKey
-                console.log 'stylesAfterCal:' + stylesAfterCal
-                console.log 'stylesAfterCal.keyAfterCal:' + stylesAfterCal[keyAfterCal]
+                # console.log 'keyAfterCal:' + keyAfterCal
+                # console.log 'columnKey:' + columnKey
+                # console.log 'stylesAfterCal:' + stylesAfterCal
+                # console.log 'stylesAfterCal.keyAfterCal:' + stylesAfterCal[keyAfterCal]
 
-                console.log 'stylesAfterCal.keyAfterCal[columnKey]  '+stylesAfterCal[keyAfterCal][columnKey]
-
-                html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueAfterCal[columnKey][dayIndex]
+                # console.log 'stylesAfterCal.keyAfterCal[columnKey]  '+stylesAfterCal[keyAfterCal][columnKey]
+                if modeIndex == 0
+                  valueToShow = valueAfterCal[columnKey][dayIndex]
+                else
+                    console.log "valueAfterCal[columnKey][dayIndex]: "+valueAfterCal[columnKey][dayIndex]
+                    if valueAfterCal[columnKey][dayIndex].toString() != 'na'
+                      valueAfterCal[columnKey][dayIndex] *= 100
+                      if valueAfterCal[columnKey][dayIndex] <= 0
+                        if valueAfterCal[columnKey][dayIndex] > -10 
+                          valueToShow = valueAfterCal[columnKey][dayIndex].toString()[0..3] + "%"
+                        else
+                          valueToShow = valueAfterCal[columnKey][dayIndex].toString()[0..4] + "%"
+                      else
+                        if valueAfterCal[columnKey][dayIndex] < 10 
+                          valueToShow = valueAfterCal[columnKey][dayIndex].toString()[0..2] + "%"
+                        else
+                          valueToShow = valueAfterCal[columnKey][dayIndex].toString()[0..3] + "%"
+                    else 
+                      valueToShow = NaN
+                html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow
                 # for valueKeyAfterCal,valueValueAfterCal in valueAfterCal
                 #   if valueKeyAfterCal == columnKey
                 #     html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal[columnKey][dayIndex]
