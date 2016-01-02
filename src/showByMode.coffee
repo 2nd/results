@@ -66,11 +66,9 @@ class ResultShow
           "<span>" + d.getHours() + ':00</span>'
 
       for i in [1...row.length]
-
         value = row[i]
         columnIndex = i
         columnKey = columnLi[columnIndex]
-
 
         if i == 1 
           currentKeys = ''
@@ -108,9 +106,9 @@ class ResultShow
                 else
                   valueToShow = NaN
               if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'better'
-                html += '<td class=' + stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow;
+                html += '<td class=' + stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow
               else if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'worse'
-                html += '<td class=' + stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow;
+                html += '<td class=' + stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow
               else
                 html += '<td class=' + stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow
               break
@@ -131,52 +129,4 @@ class ResultShow
     cls += ' filter' if data && settings.filter
     attributes += ' class="' + cls + '"' if cls.length != 0
     attributes
-
-
-
-
-
-
-
-
-    # resultsList = new Array()
-    # console.log resultsList
-    # if(modeList[tempIndex] == 'M0')
-
-    #   for dateEle in dateLi
-    #     resultsListRow = new Array()
-    #     resultsListRow.push(dateEle)
-    #     for key1,value1 of valueDic
-
-    #       keySplit = key1.split("$")
-    #       for keySplitEle in keySplit
-    #         html += keySplitEle + "   "
-    #         resultsListRow.push(keySplitEle)
-    #         #console.log 'html:'+html
-    #       for key2 ,value2 of value1
-    #         #console.log 'key2:'+key2
-    #         for colELe,p in columnLi
-    #           #console.log 'colELe:'+colELe
-    #           if colELe == key2
-    #             for cellValue,i in value2
-    #               tempStyle = styleDic[key1][key2][i]
-    #               tempCellList = new Array()
-    #               tempCellList.push(cellValue)
-    #               tempCellList.push(tempStyle)
-    #               resultsListRow.push(tempCellList)
-    #               html += "   "+cellValue + "style: " + tempStyle + "   "
-    #               #console.log 'colELe:'+colELe
-
-
-
-    #     resultsList.push(resultsListRow)
-    #   resultsList.push(fields)
-    #   console.log 'resultsList:   '+resultsList
-    #   newResults = new window.Results(document.getElementById('results'));
-    #   newResults.show(resultsList)
-            #console.log 'rsultsList:   '+resultsList
-
-    #@ele.innerHTML = resultsList
-
-
 window.ResultShow = ResultShow
