@@ -23,14 +23,9 @@ class ResultShow
   showTable: (rows,modeIndex)->
 
     fields = rows[rows.length - 1]
-    #console.log 'fields:   '+ fields
     html = ''
-    #console.log index
     valuesAfterCal = data[modeIndex].valueDic
-
-    #console.log 'valuesAfterCal:  '+ valuesAfterCal
     stylesAfterCal = data[modeIndex].styleDic
-    #console.log 'stylesAfterCal:  '+ stylesAfterCal
     zero = fields[0]
 
     header = ''
@@ -51,7 +46,6 @@ class ResultShow
       break unless i < rows.length - 1
       d = new Date(row[0])
       dayIndex = dateLi.indexOf(String(d))
-      console.log 'dayIndex:     '+dayIndex
       day = d.getDay()
       if day > last ||  i == 0
         html +=
@@ -60,7 +54,6 @@ class ResultShow
             '<tr class=header><th>' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
           when 'hour'
             '<tr class=header><th>' + d.getDate() + ' ' + locale.months[d.getMonth()] + ' ' + d.getFullYear()  + header
-
         index = 0
       last = day
 
@@ -72,81 +65,55 @@ class ResultShow
         when 'hour'
           "<span>" + d.getHours() + ':00</span>'
 
-
       for i in [1...row.length]
-        console.log 'i:   '+i
 
         value = row[i]
-        console.log 'value:   '+value
         columnIndex = i
-        console.log 'columnIndex:   '+columnIndex
         columnKey = columnLi[columnIndex]
-        console.log 'columnKey:' + columnKey
 
-        if i == 1
+
+        if i == 1 
           currentKeys = ''
         if s = settings[i]
           html += "<td#{@seal(s, true)}>"
           if s.filter
-            #console.log 'now is the if s.filter case:' + value
             if currentKeys == ''
               currentKeys += value
+            else if value == "undefine"
+              currentKeys = value
+              break
             else
               currentKeys += '$'+value
-            #console.log "currentKeys: " + currentKeys
             html += '<span>' + value + '</span>'
           else
-            html += value
-            # for keyAfterCal , valueAfterCal of valuesAfterCal
-            #   #console.log "keyAfterCal:" + keyAfterCal + "currentKeys: " + currentKeys
-            #   if keyAfterCal == currentKeys
-            #     console.log 'columnKey:' + columnKey
-
-            #     #console.log 'valueAfterCal.columnKey.length:' + valueAfterCal.columnKey.length
-            #     for element in valueAfterCal
-            #       console.log 'element in valueAfterCal:' + element
-            #     html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal.columnKey[dayIndex]
-            #     break;
+            html += '<span>' + value + '</span>'
         else
-            #console.log 'now is the else settings case:' + value
-            for keyAfterCal , valueAfterCal of valuesAfterCal
-              #console.log "keyAfterCal:" + keyAfterCal + "currentKeys: " + currentKeys
-              if keyAfterCal == currentKeys
-                # console.log 'keyAfterCal:' + keyAfterCal
-                # console.log 'columnKey:' + columnKey
-                # console.log 'stylesAfterCal:' + stylesAfterCal
-                # console.log 'stylesAfterCal.keyAfterCal:' + stylesAfterCal[keyAfterCal]
-
-                # console.log 'stylesAfterCal.keyAfterCal[columnKey]  '+stylesAfterCal[keyAfterCal][columnKey]
-                if modeIndex == 0
-                  valueToShow = valueAfterCal[columnKey][dayIndex]
-                else
-                    console.log "valueAfterCal[columnKey][dayIndex]: "+valueAfterCal[columnKey][dayIndex]
-                    if valueAfterCal[columnKey][dayIndex].toString() != 'na'
-                      valueToShow = valueAfterCal[columnKey][dayIndex] * 100
-                      if valueAfterCal[columnKey][dayIndex] <= 0
-                        if valueToShow > -10
-                          valueToShow = valueToShow.toString()[0..3] + "%"
-                        else
-                          valueToShow = valueToShow.toString()[0..4] + "%"
-                      else
-                        if valueToShow < 10
-                          valueToShow = valueToShow.toString()[0..2] + "%"
-                        else
-                          valueToShow = valueToShow.toString()[0..3] + "%"
+          for keyAfterCal , valueAfterCal of valuesAfterCal
+            if keyAfterCal == currentKeys || columnLi[columnLi.length - 1] == 1
+              if modeIndex == 0
+                valueToShow = valueAfterCal[columnKey][dayIndex]
+              else
+                if valueAfterCal[columnKey][dayIndex].toString() != 'na'
+                  valueToShow = valueAfterCal[columnKey][dayIndex] * 100
+                  if valueAfterCal[columnKey][dayIndex] <= 0
+                    if valueToShow > -10
+                      valueToShow = valueToShow.toString()[0..3] + "%"
                     else
-                      valueToShow = NaN
-                if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'better'
-                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow;
-                else if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'worse'
-                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow;
+                      valueToShow = valueToShow.toString()[0..4] + "%"
+                  else
+                    if valueToShow < 10
+                      valueToShow = valueToShow.toString()[0..2] + "%"
+                    else
+                      valueToShow = valueToShow.toString()[0..3] + "%"
                 else
-                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow
-                #   if valueKeyAfterCal == columnKey
-                #     html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal[columnKey][dayIndex]
-                #     break
-                break
-
+                  valueToShow = NaN
+              if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'better'
+                html += '<td class=' + stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow;
+              else if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'worse'
+                html += '<td class=' + stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow;
+              else
+                html += '<td class=' + stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow
+              break
       index++
     @settings = settings
     @ele.classes('-focus')
