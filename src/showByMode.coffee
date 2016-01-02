@@ -123,21 +123,25 @@ class ResultShow
                 else
                     console.log "valueAfterCal[columnKey][dayIndex]: "+valueAfterCal[columnKey][dayIndex]
                     if valueAfterCal[columnKey][dayIndex].toString() != 'na'
-                      valueAfterCal[columnKey][dayIndex] *= 100
+                      valueToShow = valueAfterCal[columnKey][dayIndex] * 100
                       if valueAfterCal[columnKey][dayIndex] <= 0
-                        if valueAfterCal[columnKey][dayIndex] > -10 
-                          valueToShow = valueAfterCal[columnKey][dayIndex].toString()[0..3] + "%"
+                        if valueToShow > -10 
+                          valueToShow = valueToShow.toString()[0..3] + "%"
                         else
-                          valueToShow = valueAfterCal[columnKey][dayIndex].toString()[0..4] + "%"
+                          valueToShow = valueToShow.toString()[0..4] + "%"
                       else
-                        if valueAfterCal[columnKey][dayIndex] < 10 
-                          valueToShow = valueAfterCal[columnKey][dayIndex].toString()[0..2] + "%"
+                        if valueToShow < 10 
+                          valueToShow = valueToShow.toString()[0..2] + "%"
                         else
-                          valueToShow = valueAfterCal[columnKey][dayIndex].toString()[0..3] + "%"
+                          valueToShow = valueToShow.toString()[0..3] + "%"
                     else 
                       valueToShow = NaN
-                html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow
-                # for valueKeyAfterCal,valueValueAfterCal in valueAfterCal
+                if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'better'
+                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow + '<svg width="10px" height="20px"><defs><marker id="arrow" markerWidth="3" markerHeight="6" refx="0" refy="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L2.5,3 z" fill="#FF6666" /></marker></defs><line x1="5" y1="20" x2="5" y2="8" stroke="#FF6666" stroke-width="1.6" marker-end="url(#arrow)" /></svg>';
+                else if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'worse'
+                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow + '<svg width="10px" height="20px"><defs><marker id="arrow" markerWidth="3" markerHeight="6" refx="0" refy="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L2.5,3 z" fill="#33CC99" /></marker></defs><line x1="5" y1="4" x2="5" y2="16" stroke="#33CC99" stroke-width="1.6" marker-end="url(#arrow)" /></svg>';
+                else
+                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow 
                 #   if valueKeyAfterCal == columnKey
                 #     html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal[columnKey][dayIndex]
                 #     break
