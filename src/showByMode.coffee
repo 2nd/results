@@ -48,7 +48,7 @@ class ResultShow
     last = 0
     index = 0
     for row, i in rows
-      break unless i < rows.length - 1 
+      break unless i < rows.length - 1
       d = new Date(row[0])
       dayIndex = dateLi.indexOf(String(d))
       console.log 'dayIndex:     '+dayIndex
@@ -104,7 +104,7 @@ class ResultShow
 
             #     #console.log 'valueAfterCal.columnKey.length:' + valueAfterCal.columnKey.length
             #     for element in valueAfterCal
-            #       console.log 'element in valueAfterCal:' + element                
+            #       console.log 'element in valueAfterCal:' + element
             #     html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal.columnKey[dayIndex]
             #     break;
         else
@@ -125,30 +125,29 @@ class ResultShow
                     if valueAfterCal[columnKey][dayIndex].toString() != 'na'
                       valueToShow = valueAfterCal[columnKey][dayIndex] * 100
                       if valueAfterCal[columnKey][dayIndex] <= 0
-                        if valueToShow > -10 
+                        if valueToShow > -10
                           valueToShow = valueToShow.toString()[0..3] + "%"
                         else
                           valueToShow = valueToShow.toString()[0..4] + "%"
                       else
-                        if valueToShow < 10 
+                        if valueToShow < 10
                           valueToShow = valueToShow.toString()[0..2] + "%"
                         else
                           valueToShow = valueToShow.toString()[0..3] + "%"
-                    else 
+                    else
                       valueToShow = NaN
                 if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'better'
-                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow + '<svg width="10px" height="20px"><defs><marker id="arrow" markerWidth="3" markerHeight="6" refx="0" refy="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L2.5,3 z" fill="#FF6666" /></marker></defs><line x1="5" y1="20" x2="5" y2="8" stroke="#FF6666" stroke-width="1.6" marker-end="url(#arrow)" /></svg>';
+                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow;
                 else if stylesAfterCal[keyAfterCal][columnKey][dayIndex] == 'worse'
-                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow + '<svg width="10px" height="20px"><defs><marker id="arrow" markerWidth="3" markerHeight="6" refx="0" refy="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L2.5,3 z" fill="#33CC99" /></marker></defs><line x1="5" y1="4" x2="5" y2="16" stroke="#33CC99" stroke-width="1.6" marker-end="url(#arrow)" /></svg>';
+                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow;
                 else
-                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow 
+                  html += '<td class='+stylesAfterCal[keyAfterCal][columnKey][dayIndex]+'>' + valueToShow
                 #   if valueKeyAfterCal == columnKey
                 #     html += '<td class='+stylesAfterCal.keyAfterCal[dayIndex]+'>' + valueAfterCal[columnKey][dayIndex]
                 #     break
                 break
 
       index++
-
     @settings = settings
     @ele.classes('-focus')
     @ele.innerHTML = html
@@ -176,7 +175,7 @@ class ResultShow
     # resultsList = new Array()
     # console.log resultsList
     # if(modeList[tempIndex] == 'M0')
-      
+
     #   for dateEle in dateLi
     #     resultsListRow = new Array()
     #     resultsListRow.push(dateEle)
