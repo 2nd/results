@@ -46,53 +46,39 @@ window.build = (rows) ->
       name = columns[i]
       values[name] = (group[day]?[i] || 0 for day in days)
 
-  return {days: days, data: data, columns: columns, filterCount: dataOffset}
+  return {
+    days: days
+    data: data
+    columns: columns
+    filterCount: dataOffset
+    dataColumns: columns.slice(dataOffset)
+  }
 
 
+# the modes we support, comparing a day against OFFSET days ago
+offsets = [0, 1, 7]
 
-largerBetter = ['total']
-littleBetter = ['avg', 'stddev', '95', '99']
 defineStyle = (column, value) ->
-  if largerBetter.indexOf(column) != -1
-    value = - value
-  if value > 0
-    return 'better'
-  else if value <0
-    return 'worse'
-  return 'none' # ['Worse', 'Better', 'normal']
+  # todo: we discovered that this isn't as obvious as we thought
+  'none'
 
-calculatePercent = (colKey, colArray,compareIndex) ->
-  dayCompare = []
-  dayStyle = []
-  colArray = colArray.reverse()
-  for i in [0...colArray.length-compareIndex] by 1
-    tempvalue = (colArray[i] - colArray[i+compareIndex])/(colArray[i+compareIndex] + 1)  # colArray[i+1]  might be 0
-    dayCompare.push(tempvalue)
-    dayStyle.push(defineStyle(colKey, tempvalue))
-  for i in [0...compareIndex] by 1
-      dayStyle.push('none')
-      dayCompare.push('na')
-  return [dayCompare.reverse(), dayStyle.reverse()]
+# given a list of values, the % changed against the value at the specified offset
+calculate = (offset, values) ->
+  changes = new Array(values.length)
+  for value, i in values
+    if offset == 0
+      changes[i] = {value: value, style: 'none'}
+    else
+      previous = values[i + offset] || value
+      diff = (value - previous) / previous * 100
+      changes[i] = {value: diff, style: 'none'}
+  return changes
 
-window.calculateTrend = (inputValueDic) ->
-  dayValueDic = {}
-  weekValueDic = {}
-  dayStyleDic = {}
-  weekStyleDic = {}
-  todayStyleDic = {}
-  for regKey, value of inputValueDic
-    dayValueDic[regKey] = {}
-    weekValueDic[regKey] = {}
-    dayStyleDic[regKey] = {}
-    weekStyleDic[regKey] = {}
-    todayStyleDic[regKey] = {}
-    for colKey, colArray of value  # column key , column array
-      todayStyleDic[regKey][colKey] = []
-      for i in [0...colArray.length] by 1
-        todayStyleDic[regKey][colKey].push('none')
-      [dayValueDic[regKey][colKey], dayStyleDic[regKey][colKey]] = calculatePercent(colKey, colArray, 1)
-      [weekValueDic[regKey][colKey], weekStyleDic[regKey][colKey]] = calculatePercent(colKey, colArray, 7)
-  M0 = {valueDic: inputValueDic, styleDic: todayStyleDic}
-  M1 = {valueDic: dayValueDic, styleDic: dayStyleDic}
-  M2 = {valueDic: weekValueDic, styleDic: weekStyleDic}
-  return [M0, M1, M2]
+window.calculateTrend = (input) ->
+  modes = new Array(offsets.length)
+  for offset, i in offsets
+    mode = modes[i] = {}
+    for key, group of input.data
+      keyed = mode[key] = {}
+      keyed[column] = calculate(offset, group[column]) for column in input.dataColumns
+  return modes

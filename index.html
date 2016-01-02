@@ -12,9 +12,9 @@
 <table id=results></table>
 
 <script>
-console.log(window.build(sample3))
-Mlist = window.calculateTrend(valueDic)
-window.data = Mlist
+var input = window.build(sample3)
+var data = window.calculateTrend(input);
+console.log(data);
 results1 = new window.ResultShow(document.getElementById('results'));
 results1.showByMode(sample3)
 </script>
