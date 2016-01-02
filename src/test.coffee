@@ -1,69 +1,54 @@
-window.build = (sample) ->
-  fields = sample[sample.length-1]
-  filters = []
-  filterNames = []
-  names = []
+getRowKey = (row, dataOffset) ->
+  return 'undefined' if dataOffset == 1 # only a date
+  key = row[1]
+  key += '$' + row[i] for i in [2...dataOffset]
+  return key
+
+window.build = (rows) ->
+  dataOffset = 0
+  fields = rows[rows.length-1]
+  columns = new Array(fields.length)
+
+  # get a list of all column names, and figure our where the data starts (and the filters stop)
   for field,i in fields
-    continue if i == 0
     if field.filter
-      filters.push i
-      filterNames.push field.name
+      columns[i] = field.name
     else
-      names.push field
+      dataOffset = i if dataOffset == 0
+      columns[i] = field
 
-  totalName = ["date"].concat(filterNames.concat(names))
-  totalName.push filters.length+1
+  # group all our data by unique row keys, by date. A row key is the combination
+  # of a rows filters (minus the date)
+  groups = {}
+  for i in [0...rows.length-1] by 1
+    row = rows[i]
+    time = new Date(row[0]).getTime()
+    key = getRowKey(row, dataOffset)
 
-  element = []
+    group = groups[key]
+    group = groups[key] = {} unless group?
+    group[time] = row
+
+  # some data might have not have entries for a given day. Let's get a list of
+  # all days so that we can later fill the missing ones with 0.
+  newestDay = new Date(rows[0][0]).getTime()
+  oldestDay = new Date(rows[rows.length-2][0]).getTime()
+  numberOfDays = (newestDay - oldestDay)/(1000 * 3600 * 24)
+  days = (oldestDay + i * 86400000 for i in [0..numberOfDays] by 1)
+
+  # rotate the data so that it's organized by column (but still grouped by key)
+  # so that data['errors$api']['total'] is an array where the first element
+  # is the total number of api errors which happened on the latest day
   data = {}
-  for row in sample.slice(0,sample.length-1)
-    if filters.length > 0
-      key = ""
-      for i in filters
-        key += row[i]+"$"
-      key = key.substring(0,key.length-1)
-    else
-      key = "undefine"
-    for i in [0...row.length]
-      if i not in filters
-        element.push row[i]
-    time = new Date(element[0])
-    if data[key]
-      data[key][time] = element.slice(1)
-    else
-      data[key] = {}
-      data[key][time] = element.slice(1)
-    element = []
+  for key, group of groups
+    data[key] = values = {}
+    for i in [dataOffset...columns.length]
+      name = columns[i]
+      values[name] = (group[day]?[i] || 0 for day in days)
 
-  allDays = []
-  oldestDay = new Date(sample[sample.length-2][0])
-  latestDay = new Date(sample[0][0])
-  diffDays = (latestDay - oldestDay)/(1000 * 3600 * 24)
-  for i in [0...diffDays+1] by 1
-    result = new Date(oldestDay)
-    result.setDate(oldestDay.getDate() + i)
-    allDays.push result
+  return {days: days, data: data, columns: columns, filterCount: dataOffset}
 
-  results = {}
-  for key of data
-    columnList = {}
-    for i in [0...names.length]
-      name = names[i]
-      list = []
-      for day in allDays
-        if data[key][day]
-          list.push data[key][day][i]
-        else
-          list.push 0
-      columnList[name]=list
-    results[key]=columnList
 
-  for ele,i in allDays
-   allDays[i] = String(ele)
-
-  window.valueDic = results
-  window.columnLi = totalName
-  window.dateLi = allDays
 
 largerBetter = ['total']
 littleBetter = ['avg', 'stddev', '95', '99']
