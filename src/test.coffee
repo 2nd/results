@@ -11,6 +11,7 @@ window.build = (sample) ->
       filterNames.push field.name
     else
       names.push field
+
   totalName = ["date"].concat(filterNames.concat(names))
   totalName.push filters.length+1
 
@@ -23,18 +24,16 @@ window.build = (sample) ->
         key += row[i]+"$"
       key = key.substring(0,key.length-1)
     else
-        key = "undefine"
+      key = "undefine"
 
     for i in [0...row.length]
       if i not in filters
         element.push row[i]
     time = new Date(element[0])
     if data[key]
-      data[key][time] = {}
       data[key][time] = element.slice(1)
     else
       data[key] = {}
-      data[key][time] = {}
       data[key][time] = element.slice(1)
     element = []
 
@@ -64,13 +63,6 @@ window.build = (sample) ->
   window.valueDic = results
   window.columnLi = totalName
   window.dateLi = allDays
-
-
-
-
-
-
-
 
 
 window.calcPrectage = (valueDic) ->
@@ -104,6 +96,9 @@ window.assignStyle = (sample, valuePrecDay, valuePrecWeek, columnLi, dateLi) ->
   filters = columnLi.pop()
   for row, rowInd in sample.slice(0,sample.length-1)
     day = String(new Date(row[0]))
+    console.log typeof day
+    console.log typeof dateLi
+    console.log dateLi.indexOf(day)
     key = ''
     if filters == 1
       key = "undefine"

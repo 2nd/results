@@ -64,7 +64,8 @@ class Results
       if filters?
         for i in [filters...row.length]
           valueRaw = row[i][0]
-          value = Number(Math.abs(Math.round(valueRaw * 100).toFixed(5))) + '%'
+          value = parseFloat(valueRaw * 100).toFixed(2);
+          #value = Number(Math.abs(Math.round(valueRaw * 100).toFixed(5))) + '%'
           styl = row[i][1]
           if s = settings[i]
             html += "<td#{@seal(s, true)}>"
@@ -78,7 +79,7 @@ class Results
               else if styl == "worse"
                 html += '<td class=worse>' + value + '<svg width="10px" height="20px"><defs><marker id="arrow" markerWidth="3" markerHeight="6" refx="0" refy="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L2.5,3 z" fill="#33CC99" /></marker></defs><line x1="5" y1="4" x2="5" y2="16" stroke="#33CC99" stroke-width="1.6" marker-end="url(#arrow)" /></svg>';
               else
-                html += '<td>' + value 
+                html += '<td>' + value
         index++
       else
         for i in [1...row.length]
