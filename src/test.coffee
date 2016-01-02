@@ -7,15 +7,12 @@ getRowKey = (row, dataOffset) ->
 window.build = (rows) ->
   dataOffset = 0
   fields = rows[rows.length-1]
-  columns = new Array(fields.length)
 
-  # get a list of all column names, and figure our where the data starts (and the filters stop)
+  # figure our where the data starts (and the filters stop)
   for field,i in fields
-    if field.filter
-      columns[i] = field.name
-    else
-      dataOffset = i if dataOffset == 0
-      columns[i] = field
+    continue if field.filter
+    dataOffset = i
+    break
 
   # group all our data by unique row keys, by date. A row key is the combination
   # of a rows filters (minus the date)
@@ -42,16 +39,17 @@ window.build = (rows) ->
   data = {}
   for key, group of groups
     data[key] = values = {}
-    for i in [dataOffset...columns.length]
-      name = columns[i]
+    for i in [dataOffset...fields.length]
+      name = fields[i]
       values[name] = (group[day]?[i] || 0 for day in days)
 
   return {
     days: days
     data: data
-    columns: columns
+    fields: fields
+    keys: Object.keys(data)
     filterCount: dataOffset
-    dataColumns: columns.slice(dataOffset)
+    dataColumns: fields.slice(dataOffset)
   }
 
 

@@ -13,8 +13,7 @@
 
 <script>
 var input = window.build(sample3)
-var data = window.calculateTrend(input);
-console.log(data);
+var modes = window.calculateTrend(input);
 results1 = new window.ResultShow(document.getElementById('results'));
-results1.showByMode(sample3)
+results1.showByMode(input, modes)
 </script>
