@@ -5,60 +5,39 @@ getRowKey = (row, dataOffset) ->
   return key
 
 window.build = (rows) ->
-  dataOffset = 0
   fields = rows[rows.length-1]
+  dataOffset = fields.findIndex (f) -> !f.filter
 
-  # figure our where the data starts (and the filters stop)
-  for field,i in fields
-    continue if field.filter
-    dataOffset = i
-    break
+  columns = fields.slice(dataOffset)
+  firstDay = new Date(rows[0][0]).getTime()
+  lastDay = new Date(rows[rows.length-2][0]).getTime()
+  numberOfDays = (firstDay - lastDay)/(1000 * 3600 * 24) + 1
 
-  # group all our data by unique row keys, by date. A row key is the combination
-  # of a rows filters (minus the date)
+  # group all our data by unique row keys. A row key is the combination
+  # of a rows filters (minus the date).
   groups = {}
   for i in [0...rows.length-1] by 1
     row = rows[i]
-    time = new Date(row[0]).getTime()
     key = getRowKey(row, dataOffset)
 
     group = groups[key]
-    group = groups[key] = {} unless group?
-    group[time] = row
+    unless group?
+      group = groups[key] = {}
+      group[column] = new Array(numberOfDays).fill(0) for column in columns
 
-  # some data might have not have entries for a given day. Let's get a list of
-  # all days so that we can later fill the missing ones with 0.
-  newestDay = new Date(rows[0][0]).getTime()
-  oldestDay = new Date(rows[rows.length-2][0]).getTime()
-  numberOfDays = (newestDay - oldestDay)/(1000 * 3600 * 24)
-  days = (oldestDay + i * 86400000 for i in [0..numberOfDays] by 1)
+    index = (firstDay - new Date(row[0]).getTime()) / 86400000
+    group[column][index] = row[j + dataOffset] for column, j in columns
 
-  # rotate the data so that it's organized by column (but still grouped by key)
-  # so that data['errors$api']['total'] is an array where the first element
-  # is the total number of api errors which happened on the latest day
-  data = {}
-  for key, group of groups
-    data[key] = values = {}
-    for i in [dataOffset...fields.length]
-      name = fields[i]
-      values[name] = (group[day]?[i] || 0 for day in days)
-
-  return {
-    days: days
-    data: data
-    fields: fields
-    keys: Object.keys(data)
-    filterCount: dataOffset
-    dataColumns: fields.slice(dataOffset)
-  }
+  return {fields: fields, groups: groups, firstDay: firstDay, lastDay: lastDay, dataOffset: dataOffset, numberOfDays: numberOfDays}
 
 
 # the modes we support, comparing a day against OFFSET days ago
 offsets = [0, 1, 7]
-
-defineStyle = (column, value) ->
-  # todo: we discovered that this isn't as obvious as we thought
-  'none'
+getStyle = (column, value) ->
+  # todo this depends on the report
+  return 'better' if value > 0
+  return 'worse' if value < 0
+  return 'none'
 
 # given a list of values, the % changed against the value at the specified offset
 calculate = (offset, values) ->
@@ -69,14 +48,14 @@ calculate = (offset, values) ->
     else
       previous = values[i + offset] || value
       diff = (value - previous) / previous * 100
-      changes[i] = {value: diff, style: 'none'}
+      changes[i] = {value: diff.toFixed(2), style: getStyle(null, diff)}
   return changes
 
-window.calculateTrend = (input) ->
+window.calculateTrend = (data) ->
   modes = new Array(offsets.length)
   for offset, i in offsets
     mode = modes[i] = {}
-    for key, group of input.data
+    for key, group of data.groups
       keyed = mode[key] = {}
-      keyed[column] = calculate(offset, group[column]) for column in input.dataColumns
+      keyed[column] = calculate(offset, values) for column, values of group
   return modes

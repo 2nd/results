@@ -5,7 +5,6 @@ locale =
   weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 dateFilter = 'day'
 
-
 class ResultShow
   constructor: (@ele) ->
 
@@ -21,35 +20,55 @@ class ResultShow
       @showMode(input, modes[index])
 
   buildTable: (input) ->
-    fields = input.fields
     header = ''
-    dataCells = ''
-    for i in [0...fields.length] by 1
+    fields = input.fields
+    for i in [1...fields.length] by 1
       field = fields[i]
       if name = field.name
-        header += '<th>' + name
+        header += '<th class=filter>' + name
       else
         header += '<th>' + field
-        dataCells += '<td>'
 
-    html = header
-    for day in input.days
-      for key in input.keys
-        html += '<tr><td>' + day
-        html += '<td>' + filter for filter in key.split('$')
+    dataCells = ''
+    dataCells += '<td>' for i in [0...fields.length - input.dataOffset]
+
+    # keys need to be the same order across modes
+    keys = Object.keys(input.groups)
+    keyParts = (key.split('$') for key in keys)
+
+    rowIndex = 0
+    html = @buildHeader(new Date(input.firstDay), header)
+    for i in [input.firstDay..input.lastDay] by -86400000
+      d = new Date(i)
+      if d.getDay() == 0
+        html += @buildHeader(d, header)
+        rowIndex = 0
+      for key, j in keys
+        dayText = if j == 0 then locale.weekdays[d.getDay()] + ' ' + d.getDate() else ''
+        html += '<tr'
+        html += ' class=o' if rowIndex++ % 2 == 1
+        html += '><td class=filter><span>' + dayText + '</span>'
+        html += '<td class=filter><span>' + filter + '</span>' for filter in keyParts[j]
         html += dataCells
 
+    @keys = keys
+    @columns = Object.keys(input.groups[keys[0]])
     @ele.innerHTML = html
     @cells = $(@ele, 'td')
     null
 
+  buildHeader: (d, header) ->
+    '<tr><th class=filter>' + locale.months[d.getMonth()] + ' ' + d.getFullYear() + header
+
   showMode: (input, mode) ->
     cellIndex = 0
-    for day, row in input.days
-      for key in input.keys
-        cellIndex += input.filterCount
-        for column, i in input.dataColumns
-          value = mode[key][column][row]
-          @cells[cellIndex++].innerHTML = value.value
+    for dayIndex in [0...input.numberOfDays] by 1
+      for key in @keys
+        cellIndex += input.dataOffset
+        for column, i in @columns
+          value = mode[key][column][dayIndex]
+          cell = @cells[cellIndex++]
+          cell.innerHTML = value.value
+          cell.className = value.style
     return
 window.ResultShow = ResultShow

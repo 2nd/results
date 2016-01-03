@@ -12,8 +12,8 @@
 <table id=results></table>
 
 <script>
-var input = window.build(sample3)
-var modes = window.calculateTrend(input);
+var data = window.build(sample3)
+var modes = window.calculateTrend(data);
 results1 = new window.ResultShow(document.getElementById('results'));
-results1.showByMode(input, modes)
+results1.showByMode(data, modes)
 </script>

@@ -3,36 +3,29 @@
   margin-top 20px
   table-layout fixed
   border-collapse collapse
-  &.focus td:not(.focus)
-    color #ccc
-  &.focus tr.focus
-    td
-      color #000
+
   th
     border-bottom 2px solid black
   td, th
     padding 10px 4px
     text-align center
-  th:first-of-type
-    width 120px
-  th:first-of-type, td:first-of-type, td.left, th.left
-    text-align left
-
-  tr.header:not(:first-of-type)
-    th
-      padding-top 40px
-  td.filter
-    text-align center
   td
-    border-top 1px solid #eee
+    border-bottom 1px solid #f0f0f0
   tr.o td
     background #f6f6f6
-    border-top 1px solid #f0f0f0
+  tr:hover td
+    background #FFFFD8 !important
+  th:first-of-type
+    width 120px
+  th.filter, td.filter
+    text-align left
+    span
+      border-bottom 1px solid #B2D8F6
+  tr.o td.better
+    background #e4f3e4
   td.better
-    color #fff
-    background #009A07 !important
-
+    background #eaffea
+  tr.o td.worse
+    background #f5e4e4
   td.worse
-    color #fff
-    background #FF3B3B !important
-
+    background #ffecec
