@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<link rel=stylesheet href="lib/results.css">
+<script src="lib/framework.js"></script>
+<script src="lib/results.js"></script>
+<script src="lib/showByMode.js"></script>
+<script src="lib/test.js"></script>
+<script src="sample1.js"></script>
+<script src="sample2.js"></script>
+<script src="sample3.js"></script>
+
+<canvas id="tutorial" width="1000" height="1500"></canvas>
+can you see me?
+
+<script>
+var canvas = document.getElementById('tutorial');
+var ctx = canvas.getContext('2d');
+// var ctx = canvas.getContext("2d");
+
+// ctx.fillStyle = "rgb(200,0,0)";
+ctx.rect (10, 10, 400, 400);
+ctx.stroke();
+// ctx.clearRect(20, 20, 380, 380)
+//ctx.strokeRect();
+//
+//         ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+//         ctx.fillRect (30, 30, 55, 50);
+//
+// ctx.strokeRect(20, 20, 100, 1000)
+// ctx.clearRect(40, 40, 10, 10)
+
+
+ctx.strokeStyle = 'darkgreen';
+ctx.beginPath();
+    ctx.moveTo(100, 300);
+    ctx.lineTo(200, 200);
+    ctx.lineTo(300, 300);
+//     //ctx.fill();
+    ctx.stroke();
+ctx.closePath();
+ctx.fillStyle = "rgba(0,255,0,0.1)";
+ctx.beginPath();
+    ctx.moveTo(100, 300);
+    ctx.lineTo(200, 200);
+    ctx.lineTo(300, 300);
+    ctx.lineTo(300, 400);
+    ctx.lineTo(100, 400);
+ctx.fill();
+ctx.closePath();
+
+</script>

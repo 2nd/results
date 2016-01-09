@@ -9,6 +9,7 @@ window.build = (rows) ->
   dataOffset = fields.findIndex (f) -> !f.filter
 
   columns = fields.slice(dataOffset)
+  # default the data was arranged by date from first date to last date
   firstDay = new Date(rows[0][0]).getTime()
   lastDay = new Date(rows[rows.length-2][0]).getTime()
   numberOfDays = (firstDay - lastDay)/(1000 * 3600 * 24) + 1
