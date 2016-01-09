@@ -71,4 +71,47 @@ class ResultShow
           cell.innerHTML = value.value
           cell.className = value.style
     return
+  showSparkLine: (data,modes) ->
+    width = 300
+    height = 100
+    for keys,values of modes[0][Object.keys(modes[0])]
+      sparkValue = []
+      console.log keys
+
+      for valuesKey , valuesValue of values
+        if sparkValue.length == 0
+          max = valuesValue.value
+          min = valuesValue.value
+        if max < valuesValue.value then max = valuesValue.value
+        if min > valuesValue.value then min = valuesValue.value
+        sparkValue.push(valuesValue.value)
+        
+      length = sparkValue.length
+      range = max - min
+      console.log "max is:  " + max
+      console.log "min is:  " + min
+      console.log "length is:  " + length
+      canvas = document.createElement("canvas")
+      canvas.width = width
+      canvas.height = height
+      document.body.appendChild(canvas)
+      ctx = canvas.getContext("2d")
+      ctx.beginPath()
+      ctx.moveTo(0,height)
+      
+      ctx.strokeStyle = "darkgreen"
+      ctx.fillStyle = "rgba(0, 200, 100, 0.1)"
+      for data,i in sparkValue
+        X = (i + 1) / length * width
+        Y = (data - min) / range * height
+        ctx.lineTo(X,Y)
+      ctx.lineTo(width,height)
+      ctx.lineTo(0,height)
+      ctx.fill()
+      ctx.stroke()
+
+
+
+
+
 window.ResultShow = ResultShow

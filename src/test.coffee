@@ -59,3 +59,5 @@ window.calculateTrend = (data) ->
       keyed = mode[key] = {}
       keyed[column] = calculate(offset, values) for column, values of group
   return modes
+
+
