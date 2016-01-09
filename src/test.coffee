@@ -1,5 +1,5 @@
 getRowKey = (row, dataOffset) ->
-  return 'undefined' if dataOffset == 1 # only a date
+  return '*' if dataOffset == 1 # only a date
   key = row[1]
   key += '$' + row[i] for i in [2...dataOffset]
   return key
