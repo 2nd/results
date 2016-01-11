@@ -33,8 +33,8 @@ class ResultShow
     dataCells += '<td>' for i in [0...fields.length - input.dataOffset]
 
     # keys need to be the same order across modes
-    keys = Object.keys(input.groups)
-    keyParts = (key.split('$') for key in keys)
+    keys = Object.keys(input.groups).sort()
+    keyParts = if keys[0] == '*' then null else (key.split('$') for key in keys)
 
     rowIndex = 0
     html = @buildHeader(new Date(input.firstDay), header)
@@ -48,7 +48,7 @@ class ResultShow
         html += '<tr'
         html += ' class=o' if rowIndex++ % 2 == 1
         html += '><td class=filter><span>' + dayText + '</span>'
-        html += '<td class=filter><span>' + filter + '</span>' for filter in keyParts[j]
+        html += '<td class=filter><span>' + filter + '</span>' for filter in keyParts[j] if keyParts
         html += dataCells
 
     @keys = keys
