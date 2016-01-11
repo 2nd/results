@@ -1,8 +1,8 @@
 'use strict'
 
 values = [10, 20, 26, 22, 38]
-startX = 20
-startY = 100
+startX = 0
+startY = 0
 height = 20
 width = 50
 
@@ -27,14 +27,21 @@ getCoordinates = (values, startX, startY, width=300, height=100) ->
     coords.push([x, y]) # coords.push([offsetX*(i+1), offsetY*(value-min)])
   return coords
 
-window.drawSparkline = (startX, startY, values, width=300, height=100) ->
+window.drawSparkline = (values, width=300, height=100) ->
   #alert('hello')
+  startX = startY = 0
+  width = 50
+  height = 30   # these startX, startY, width and height should be change according to
   coords = getCoordinates(values, startX, startY, width, height)
-  canvas = document.getElementById('tutorial')
+  canvas=document.createElement("canvas")
+  # define the height and width
+  canvas.height = 40
+  canvas.width = 50
+  #canvas = document.getElementById('tutorial')
   ctx = canvas.getContext('2d')
   #ctx.rect(10, 10, 400, 400)
   #ctx.rect(startX, startY-height, width, height+20)  # draw sparkline above
-  ctx.rect(startX, startY, width, height+20)
+  ctx.rect(startX, startY, width, height+5)
   ctx.stroke()
   ctx.strokeStyle = 'darkgreen'
   ctx.beginPath()
@@ -50,12 +57,33 @@ window.drawSparkline = (startX, startY, values, width=300, height=100) ->
     ctx.lineTo(coord[0], coord[1])
   #ctx.lineTo(coords[coords.length-1][0], startY+20)  # right bottom, draw sparkline above
   #ctx.lineTo(coords[0][0], startY+20)  # left bottom, draw sprakline above
-  ctx.lineTo(coords[coords.length-1][0], startY+height+20)
-  ctx.lineTo(coords[0][0], startY+height+20)
-
+  ctx.lineTo(coords[coords.length-1][0], startY+height+5)
+  ctx.lineTo(coords[0][0], startY+height+5)
   ctx.fill()
   ctx.closePath()
+  return canvas
 
+addSparkline = () ->
+  # test function
+  cList = new Array()
+  for i in [0...5]
+    cList.push(drawSparkline(startX, startY, values, width, height))
+  #canvas = drawSparkline(startX, startY, values, width, height)
+  #console.log cList
+  element = document.getElementById("div1")
+  #element.appendChild(cList[6])
+  for c in cList
+    element.appendChild(c)
+  #canvas = drawSparkline(startX, startY, values, width, height)
+  #element = document.getElementById("div2")
+  #element.appendChild(canvas)
 
-drawSparkline(startX, startY, values, width, height)
-#window.ResultShow = ResultShow
+#addSparkline()
+
+window.getSparklines = (data) ->
+  # sparkline for each column except the filter column
+  sparklines = {}
+  for key, group of data.groups
+    keyed = sparklines[key] = {}
+    keyed[column] = drawSparkline(values) for column, values of group
+  return sparklines

@@ -8,11 +8,9 @@ dateFilter = 'day'
 class ResultShow
   constructor: (@ele) ->
 
-  showByMode: (input, modes, sparklines) ->
+  showByMode: (input, modes) ->
     index = 0
     @buildTable(input)
-    console.log sparklines
-    @addSparkline(input, sparklines)
     @showMode(input, modes[0])
 
     document.onkeydown = (e) =>
@@ -24,15 +22,12 @@ class ResultShow
   buildTable: (input) ->
     header = ''
     fields = input.fields
-    console.log fields
     for i in [1...fields.length] by 1
       field = fields[i]
       if name = field.name
         header += '<th class=filter>' + name
       else
-        # if left the white space, the id will only be the string before white space,
-        # life field 'avg sec', field id will be 'avg'
-        header += '<th id=' + field.replace(/ /,"_") + '>' + field + '</br>'
+        header += '<th>' + field
 
     dataCells = ''
     dataCells += '<td>' for i in [0...fields.length - input.dataOffset]
@@ -61,13 +56,6 @@ class ResultShow
     @ele.innerHTML = html
     @cells = $(@ele, 'td')
     null
-  addSparkline: (input, sparklines) ->
-    tempKey = @keys[0]  # use the first key to test
-    console.log tempKey
-    for column in @columns
-      element = document.getElementById(column.replace(/ /,"_"))
-      #alert(column)
-      element.appendChild(sparklines[tempKey][column])
 
   buildHeader: (d, header) ->
     '<tr><th class=filter>' + locale.months[d.getMonth()] + ' ' + d.getFullYear() + header
