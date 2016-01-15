@@ -28,7 +28,6 @@ getCoordinates = (values, startX, startY, width=300, height=100) ->
   return coords
 
 window.drawSparkline = (values, width=300, height=100) ->
-  #alert('hello')
   startX = startY = 0
   width = 50
   height = 30   # these startX, startY, width and height should be change according to

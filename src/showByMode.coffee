@@ -11,7 +11,6 @@ class ResultShow
   showByMode: (input, modes, sparklines) ->
     index = 0
     @buildTable(input)
-    console.log sparklines
     @addSparkline(input, sparklines)
     @showMode(input, modes[0])
 
@@ -66,7 +65,6 @@ class ResultShow
     console.log tempKey
     for column in @columns
       element = document.getElementById(column.replace(/ /,"_"))
-      #alert(column)
       element.appendChild(sparklines[tempKey][column])
 
   buildHeader: (d, header) ->
