@@ -41,16 +41,25 @@ window.drawSparkline = (values, width=300, height=100) ->
   ctx = canvas.getContext('2d')
   #ctx.rect(10, 10, 400, 400)
   #ctx.rect(startX, startY-height, width, height+20)  # draw sparkline above
-  ctx.rect(startX, startY, width, height+5)
+  #ctx.rect(startX, startY, width, height+5)
+  #ctx.stroke()
+  ctx.lineWidth = 0.5
+  ctx.beginPath()
+  ctx.moveTo(startX, startY)
+  ctx.lineTo(startX, startY+height+5)
+  ctx.lineTo(startX+width, startY+height+5)
   ctx.stroke()
-  ctx.strokeStyle = 'darkgreen'
+  ctx.closePath()
+  ctx.strokeStyle = '#D75455'  # darkgreen
+  ctx.lineWidth = 1.5
   ctx.beginPath()
   ctx.moveTo(coords[0][0], coords[0][1])
   for coord in coords
     ctx.lineTo(coord[0], coord[1])
   ctx.stroke()
   ctx.closePath()
-  ctx.fillStyle = "rgba(0,255,0,0.1)";
+  #ctx.fillStyle = "rgba(0,255,0,0.1)";
+  ctx.fillStyle = "rgba(215,84,85,0.1)"
   ctx.beginPath();
   ctx.moveTo(coords[0][0], coords[0][1])
   for coord in coords
