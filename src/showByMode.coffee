@@ -23,16 +23,12 @@ class ResultShow
   buildTable: (input) ->
     header = ''
     fields = input.fields
-    #console.log fields
     for i in [1...fields.length] by 1
       field = fields[i]
       if name = field.name
         header += '<th class=filter>' + name
       else
-        # if left the white space, the id will only be the string before white space,
-        # life field 'avg sec', field id will be 'avg'
-        header += '<th id=' + field.replace(/ /,"_") + '>' + field + '</br>'
-        #header += '<th id="' + field + '">' + field + '</br>'
+        header += '<th id="' + field + '">' + field + '</br>'
 
     dataCells = ''
     dataCells += '<td>' for i in [0...fields.length - input.dataOffset]
@@ -63,9 +59,8 @@ class ResultShow
     null
   addSparkline: (input, sparklines) ->
     tempKey = @keys[0]  # use the first key to test
-    # console.log tempKey
     for column in @columns
-      element = document.getElementById(column.replace(/ /,"_"))
+      element = document.getElementById(column)
       element.appendChild(sparklines[tempKey][column])
 
   buildHeader: (d, header) ->
