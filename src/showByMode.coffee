@@ -28,7 +28,6 @@ class ResultShow
         header += '<th class=filter>' + name
       else
         header += '<th>' + field
-
     dataCells = ''
     dataCells += '<td>' for i in [0...fields.length - input.dataOffset]
 
@@ -50,6 +49,11 @@ class ResultShow
         html += '><td class=filter><span>' + dayText + '</span>'
         html += '<td class=filter><span>' + filter + '</span>' for filter in keyParts[j] if keyParts
         html += dataCells
+    html += '<tr'
+    html += ' class=h ' if rowIndex++ % 2 == 1 
+    html += '><td class=filter><span>' + 'Trend' + '</span>'
+    html += '<td class=filter><span>' + filter + '</span>' for filter in keyParts[j] if keyParts
+    html += dataCells
 
     @keys = keys
     @columns = Object.keys(input.groups[keys[0]])
@@ -62,6 +66,7 @@ class ResultShow
 
   showMode: (input, mode) ->
     cellIndex = 0
+    slArray = @showSparkLine(input,mode)
     for dayIndex in [0...input.numberOfDays] by 1
       for key in @keys
         cellIndex += input.dataOffset
@@ -70,48 +75,49 @@ class ResultShow
           cell = @cells[cellIndex++]
           cell.innerHTML = value.value
           cell.className = value.style
+    startIndex = @cells.length - input.fields.length + input.dataOffset
+    for slIndex in [0...slArray.length] by 1
+      slCell = @cells[startIndex + slIndex]
+      slCell.innerHTML = ''
+      slCell.appendChild(slArray[slIndex])
     return
-  showSparkLine: (data,modes) ->
-    width = 300
-    height = 100
-    for keys,values of modes[0][Object.keys(modes[0])]
-      sparkValue = []
-      console.log keys
 
-      for valuesKey , valuesValue of values
-        if sparkValue.length == 0
-          max = valuesValue.value
-          min = valuesValue.value
-        if max < valuesValue.value then max = valuesValue.value
-        if min > valuesValue.value then min = valuesValue.value
-        sparkValue.push(valuesValue.value)
+  showSparkLine: (input,mode) ->
+    width = 200
+    height = 80
+    innerWidth = 190
+    innerHeight = 60
+    fields = input.fields
+    slArray = []
+    for columnkeys,columnValues of mode[Object.keys(mode)]
+      sparkValue = []
+      max = min = columnValues[0].value
+      for cvKey , cvValue of columnValues
+        cvValue.value = Number(cvValue.value)
+        sparkValue.push(cvValue.value)
+        max = cvValue.value if max < cvValue.value
+        min = cvValue.value if min > cvValue.value
         
       length = sparkValue.length
       range = max - min
-      console.log "max is:  " + max
-      console.log "min is:  " + min
-      console.log "length is:  " + length
       canvas = document.createElement("canvas")
       canvas.width = width
       canvas.height = height
-      document.body.appendChild(canvas)
+      canvas.id = columnkeys
       ctx = canvas.getContext("2d")
       ctx.beginPath()
-      ctx.moveTo(0,height)
-      
-      ctx.strokeStyle = "darkgreen"
       ctx.fillStyle = "rgba(0, 200, 100, 0.1)"
       for data,i in sparkValue
-        X = (i + 1) / length * width
-        Y = (data - min) / range * height
-        ctx.lineTo(X,Y)
-      ctx.lineTo(width,height)
-      ctx.lineTo(0,height)
-      ctx.fill()
+        X = (i + 1) / length * innerWidth 
+        Y = (data - min) / range * innerHeight - (height - innerHeight)*2/3
+        ctx.lineTo(innerWidth - X,innerHeight - Y)
+      ctx.strokeStyle = "darkgreen"
       ctx.stroke()
-
-
-
-
+      ctx.lineTo(0,height)
+      ctx.lineTo(innerWidth - 1/length * innerWidth,height)
+      ctx.fill()
+      slArray.push(canvas)
+    return slArray
+      
 
 window.ResultShow = ResultShow
