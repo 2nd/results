@@ -14,20 +14,23 @@ findMaxMin = (values) ->
     return [0, 0]
   max = min = values[0]
   for i in [1...values.length] by 1
-    max = values[i] if values[i] > max
-    min = values[i] if values[i] < min
+    value = values[i]
+    if value > max
+      max = value
+    else
+      min = value if value < min
   return [max, min]
 
 getCoordinates = (values, startX, startY, width, height) ->
   # get the coordinate for each value in values
   coords = []
   [maxV, minV] = findMaxMin(values)
-  offsetX = width/(values.length+1)  # every x would be offsetX*(index of x+1)
-  offsetY = height/(maxV-minV)  # every y would be offsetY*(y-min)
+  offsetX = width / (values.length + 1)  # every x would be offsetX*(index of x+1)
+  offsetY = height / (maxV - minV)  # every y would be offsetY*(y-min)
   for value, i in values.reverse()  # draw the line from old day to new day
     #x = startX + offsetX*(i+1)
     #y = startY + offsetY*(maxV-value) + 2
-    coords.push([startX + offsetX*(i+1), startY + offsetY*(maxV-value) + 2]) # coords.push([x, y])
+    coords.push([startX + offsetX * ( i + 1), startY + offsetY * (maxV - value) + 2]) # coords.push([x, y])
   return coords
 
 window.drawSparkline = (values, options={}) ->
@@ -44,8 +47,8 @@ window.drawSparkline = (values, options={}) ->
   ctx.lineWidth = 0.5
   ctx.beginPath()
   ctx.moveTo(startX, startY)
-  ctx.lineTo(startX, startY+height+5)
-  ctx.lineTo(startX+width, startY+height+5)
+  ctx.lineTo(startX, startY + height + 5)
+  ctx.lineTo(startX + width, startY + height + 5)
   ctx.stroke()
   ctx.closePath()
   ctx.strokeStyle = lineColor  # darkgreen
@@ -56,8 +59,8 @@ window.drawSparkline = (values, options={}) ->
   for coord in coords
     ctx.lineTo(coord[0], coord[1])
   ctx.stroke()
-  ctx.lineTo(coords[coords.length-1][0], startY+height+5)
-  ctx.lineTo(coords[0][0], startY+height+5)
+  ctx.lineTo(coords[coords.length - 1][0], startY + height + 5)
+  ctx.lineTo(coords[0][0], startY + height + 5)
   ctx.fill()
   ctx.closePath()
   return canvas
