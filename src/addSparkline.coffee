@@ -21,46 +21,38 @@ findMaxMin = (values) ->
       min = value if value < min
   return [max, min]
 
-getCoordinates = (values, startX, startY, width, height) ->
-  # get the coordinate for each value in values
-  coords = []
-  [maxV, minV] = findMaxMin(values)
-  offsetX = width / (values.length + 1)  # every x would be offsetX*(index of x+1)
-  offsetY = height / (maxV - minV)  # every y would be offsetY*(y-min)
-  for value, i in values.reverse()  # draw the line from old day to new day
-    #x = startX + offsetX*(i+1)
-    #y = startY + offsetY*(maxV-value) + 2
-    coords.push([startX + offsetX * ( i + 1), startY + offsetY * (maxV - value) + 2]) # coords.push([x, y])
-  return coords
-
 window.drawSparkline = (values, options={}) ->
   # return a canvas object
   options[k] ?= v for k, v of defaultOptions
   [startX, startY, width, height, lineColor, lineWidth, shadowColor] =
   [options.startX, options.startY, options.width, options.height, options.lineColor, options.lineWidth, options.shadowColor]
-  coords = getCoordinates(values, startX, startY, width, height)
+
+  [maxV, minV] = findMaxMin(values)
+  stepX = width / values.length  # every x would be offsetX*(index of x+1)
+  stepY = height / (maxV - minV)  # every y would be offsetY*(y-min)
+
   canvas=document.createElement("canvas")
   # define the height and width
-  canvas.height = height + 10
-  canvas.width = width
+  canvas.height = startY + height + 10
+  canvas.width = startX + width
   ctx = canvas.getContext('2d')
-  ctx.lineWidth = 0.5
-  ctx.beginPath()
-  ctx.moveTo(startX, startY)
-  ctx.lineTo(startX, startY + height + 5)
-  ctx.lineTo(startX + width, startY + height + 5)
-  ctx.stroke()
-  ctx.closePath()
+  # ctx.fillStyle = 'black'
+  # ctx.rect(startX, startY, width, height+5)
+  # ctx.fill()
   ctx.strokeStyle = lineColor  # darkgreen
   ctx.lineWidth = lineWidth
   ctx.fillStyle = shadowColor
   ctx.beginPath()
   #ctx.moveTo(coords[0][0], coords[0][1])
-  for coord in coords
-    ctx.lineTo(coord[0], coord[1])
+  firstX = lastX = 0
+  for i in [0...values.length] by 1 # draw the line from old day to new day
+    i = values.length - 1 - i
+    x = startX + stepX * i
+    y = startY + stepY * (maxV - values[i]) + 2
+    ctx.lineTo(x, y)
   ctx.stroke()
-  ctx.lineTo(coords[coords.length - 1][0], startY + height + 5)
-  ctx.lineTo(coords[0][0], startY + height + 5)
+  ctx.lineTo(x, startY + height + 5)  # draw lines from right to left, so this x is the last x
+  ctx.lineTo(startX + width, startY + height + 5) # draw lines from right to left, so this x is the first x
   ctx.fill()
   ctx.closePath()
   return canvas
@@ -70,5 +62,5 @@ window.getSparklines = (data) ->
   sparklines = {}
   for key, group of data.groups
     keyed = sparklines[key] = {}
-    keyed[column] = drawSparkline(values, {startX:0, startY:0, width:100, height:30, lineColor:'green', shadowColor:"rgba(0,255,0,0.1)"}) for column, values of group
+    keyed[column] = drawSparkline(values, {startX:0, startY:0, width:80, height:30, lineColor:'green', shadowColor:"rgba(0,255,0,0.1)"}) for column, values of group
   return sparklines
