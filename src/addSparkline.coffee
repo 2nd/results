@@ -40,7 +40,6 @@ window.drawSparkline = (values, options={}) ->
   # define the height and width
   canvas.height = height + 10
   canvas.width = width
-  #canvas = document.getElementById('tutorial')
   ctx = canvas.getContext('2d')
   #ctx.rect(10, 10, 400, 400)
   #ctx.rect(startX, startY-height, width, height+20)  # draw sparkline above
@@ -61,7 +60,7 @@ window.drawSparkline = (values, options={}) ->
     ctx.lineTo(coord[0], coord[1])
   ctx.stroke()
   ctx.closePath()
-  ctx.fillStyle = shadowColor;
+  ctx.fillStyle = shadowColor
   #ctx.fillStyle = "rgba(215,84,85,0.1)"
   ctx.beginPath();
   ctx.moveTo(coords[0][0], coords[0][1])

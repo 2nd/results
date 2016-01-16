@@ -1,6 +1,7 @@
 <!DOCTYPE html>
+<head>
 <meta charset="utf-8" />
-<link rel=stylesheet href="lib/results.css">
+<!-- <link rel=stylesheet href="lib/results.css">
 <script src="lib/framework.js"></script>
 <script src="lib/results.js"></script>
 <script src="lib/showByMode.js"></script>
@@ -9,44 +10,52 @@
 <script src="sample2.js"></script>
 <script src="sample3.js"></script>
 <script src="sample3.js"></script>
+<script src="lib/mouseEvent.js"></script>
+<script src='../lib/sparkline.js'></script>
+<script>sparkline('example5', [5, 12, 14, 6, 8, 4, 0, 4, 8, 12, 1, 0, 0, 14, 15],{"height":150,"width":800,"dot":9, "shadeStart":8, "shadeEnd":9});
+</script> -->
 
-<canvas id="tutorial" width="1000" height="1500"></canvas>
-can you see me?
+<style type="text/css">
+<!--
+#div1{
+background-color:#00CC00;
+height:40px;
+width:40px;
+display:none;
+}
+-->
+</style>
+</head>
+<body>
+  <input type="button" id="butn" value="显示/隐藏" onclick="toggle('div1')" />
+  <center>
+  <div id="div1"></div></center>
 
-<script>
-var canvas = document.getElementById('tutorial');
-var ctx = canvas.getContext('2d');
-// var ctx = canvas.getContext("2d");
+  <script language="JavaScript" type="text/JavaScript">
 
-// ctx.fillStyle = "rgb(200,0,0)";
-ctx.rect (10, 10, 400, 400);
-ctx.stroke();
-// ctx.clearRect(20, 20, 380, 380)
-//ctx.strokeRect();
-//
-//         ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-//         ctx.fillRect (30, 30, 55, 50);
-//
-// ctx.strokeRect(20, 20, 100, 1000)
-// ctx.clearRect(40, 40, 10, 10)
+  function toggle(targetid){
 
+      target=document.getElementById(targetid);
+          if (target.style.display=="block"){
+              target.style.display="none";
+          } else {
+              target.style.display="block";
+          }
 
-ctx.strokeStyle = 'darkgreen';
-ctx.beginPath();
-    ctx.moveTo(100, 300);
-    ctx.lineTo(200, 200);
-    ctx.lineTo(300, 300);
-//     //ctx.fill();
-    ctx.stroke();
-ctx.closePath();
-ctx.fillStyle = "rgba(0,255,0,0.1)";
-ctx.beginPath();
-    ctx.moveTo(100, 300);
-    ctx.lineTo(200, 200);
-    ctx.lineTo(300, 300);
-    ctx.lineTo(300, 400);
-    ctx.lineTo(100, 400);
-ctx.fill();
-ctx.closePath();
+  }
 
-</script>
+  window.onload = function () {
+      var div1 = document.getElementById('div1');
+      document.onmousemove = function (ev) {
+          //IE支持event，firefox不支持
+          var oEvent = ev || event;
+          //
+          var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+          var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          div1.style.top = oEvent.clientY + scrollTop + 'px'; //Y
+          div1.style.left = oEvent.clientX + scrollLeft + 'px';//X
+      };
+  };
+  </script>
+
+</body>
