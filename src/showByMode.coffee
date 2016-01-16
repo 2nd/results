@@ -83,10 +83,10 @@ class ResultShow
     return
 
   showSparkLine: (input,mode) ->
-    width = 200
-    height = 80
-    innerWidth = 190
-    innerHeight = 60
+    width = 140
+    height = 60
+    innerWidth = 140
+    innerHeight = 50
     fields = input.fields
     slArray = []
     for columnkeys,columnValues of mode[Object.keys(mode)]
@@ -106,12 +106,12 @@ class ResultShow
       canvas.id = columnkeys
       ctx = canvas.getContext("2d")
       ctx.beginPath()
-      ctx.fillStyle = "rgba(0, 200, 100, 0.1)"
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
       for data,i in sparkValue
-        X = (i + 1) / length * innerWidth 
-        Y = (data - min) / range * innerHeight - (height - innerHeight)*2/3
-        ctx.lineTo(innerWidth - X,innerHeight - Y)
-      ctx.strokeStyle = "darkgreen"
+        X = innerWidth - ((i + 1) / length * innerWidth )
+        Y = innerHeight - ((data - min) / range * innerHeight - (height - innerHeight)*2/3)
+        ctx.lineTo(X,Y)
+      ctx.strokeStyle = "black"
       ctx.stroke()
       ctx.lineTo(0,height)
       ctx.lineTo(innerWidth - 1/length * innerWidth,height)
