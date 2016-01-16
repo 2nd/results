@@ -8,133 +8,45 @@
 <script src="sample1.js"></script>
 <script src="sample2.js"></script>
 <script src="sample3.js"></script>
+<script src="sample3.js"></script>
+
+<canvas id="tutorial" width="1000" height="1500"></canvas>
 can you see me?
-<div id="div1"> this is div1 </div>
-<div id="div2 shen"> this is div2 </div>
-<!-- <canvas id="tutorial" width="100" height="100"></canvas> -->
 
-
-<script src="lib/addSparkline.js"></script>
 <script>
-  // var canvas = document.getElementById('tutorial');
-  // var ctx = canvas.getContext('2d');
-  // ctx.rect (0, 0, 100, 100);
-  // ctx.stroke();
-  //
-  // ctx.strokeStyle = 'darkgreen';
-  // ctx.beginPath();
-  // ctx.moveTo(100, 300);
-  // ctx.lineTo(200, 200);
-  // ctx.lineTo(300, 300);
-  // ctx.stroke();
-  // ctx.closePath();
-  // ctx.fillStyle = "rgba(0,255,0,0.1)";
-  // ctx.beginPath();
-  // ctx.moveTo(100, 300);
-  // ctx.lineTo(200, 200);
-  // ctx.lineTo(300, 300);
-  // ctx.lineTo(300, 400);
-  // ctx.lineTo(100, 400);
-  // ctx.fill();
-  // ctx.closePath();
+var canvas = document.getElementById('tutorial');
+var ctx = canvas.getContext('2d');
+// var ctx = canvas.getContext("2d");
 
-
-var  height, startX, startY, values, width;
-values = [10, 20, 26, 22, 38];
-startX = 20;
-startY = 300;
-height = 100;
-width = 300;
-
-findMaxMin = function(values) {
-  var i, j, max, min, ref;
-  if (!values) {
-    return [0, 0];
-  }
-  max = min = values[0];
-  for (i = j = 1, ref = values.length; j < ref; i = j += 1) {
-    max = values[i] > max ? values[i] : max;
-    min = values[i] < min ? values[i] : min;
-  }
-  return [max, min];
-};
-
-getCoordinates = function(values, startX, startY, width, height) {
-  var coords, i, j, len, maxV, minV, offsetX, offsetY, ref, value, x, y;
-  if (width == null) {
-    width = 300;
-  }
-  if (height == null) {
-    height = 100;
-  }
-  coords = [];
-  ref = findMaxMin(values), maxV = ref[0], minV = ref[1];
-  offsetX = width / (values.length + 1);
-  offsetY = height / (maxV - minV);
-  for (i = j = 0, len = values.length; j < len; i = ++j) {
-    value = values[i];
-    x = startX + offsetX * (i + 1);
-    y = startY - offsetY * (value - minV);
-    coords.push([x, y]);
-  }
-  return coords;
-};
-
-
-window.drawSparkline = function(startX, startY, values) {
-  var canvas, coord, coords, ctx, j, k, len, len1;
-  alert('hello');
-  coords = getCoordinates(values, startX, startY, width = 300, height = 100);
-  canvas = document.getElementById('tutorial');
-  ctx = canvas.getContext('2d');
-  ctx.rect(10, 10, 400, 400);
-  ctx.stroke();
-  ctx.strokeStyle = 'darkgreen';
-  ctx.beginPath();
-  ctx.moveTo(coords[0][0], coords[0][1]);
-  for (j = 0, len = coords.length; j < len; j++) {
-    coord = coords[j];
-    ctx.lineTo(coord[0], coord[1]);
-  }
-  ctx.stroke();
-  ctx.closePath();
-  ctx.fillStyle = "rgba(0,255,0,0.1)";
-  ctx.beginPath();
-  ctx.moveTo(coords[0][0], coords[0][1]);
-  for (k = 0, len1 = coords.length; k < len1; k++) {
-    coord = coords[k];
-    ctx.lineTo(coord[0], coord[1]);
-  }
-  ctx.lineTo(coords[coords.length - 1][0], startY + 20);
-  ctx.lineTo(coords[0][0], startY + 20);
-  ctx.fill();
-  return ctx.closePath();
-};
-
-// drawSparkline(startX, startY, values);
-
-// draw = function(){
-//   var canvas = document.getElementById('tutorial');
-//   var ctx = canvas.getContext('2d');
-//   ctx.rect (10, 10, 400, 400);
-//   ctx.stroke();
+// ctx.fillStyle = "rgb(200,0,0)";
+ctx.rect (10, 10, 400, 400);
+ctx.stroke();
+// ctx.clearRect(20, 20, 380, 380)
+//ctx.strokeRect();
 //
-//   ctx.strokeStyle = 'darkgreen';
-//   ctx.beginPath();
-//   ctx.moveTo(100, 300);
-//   ctx.lineTo(200, 200);
-//   ctx.lineTo(300, 300);
-//   ctx.stroke();
-//   ctx.closePath();
-//   ctx.fillStyle = "rgba(0,255,0,0.1)";
-//   ctx.beginPath();
-//   ctx.moveTo(100, 300);
-//   ctx.lineTo(200, 200);
-//   ctx.lineTo(300, 300);
-//   ctx.lineTo(300, 400);
-//   ctx.lineTo(100, 400);
-//   ctx.fill();
-//   ctx.closePath();
-// }
-// //draw();
+//         ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+//         ctx.fillRect (30, 30, 55, 50);
+//
+// ctx.strokeRect(20, 20, 100, 1000)
+// ctx.clearRect(40, 40, 10, 10)
+
+
+ctx.strokeStyle = 'darkgreen';
+ctx.beginPath();
+    ctx.moveTo(100, 300);
+    ctx.lineTo(200, 200);
+    ctx.lineTo(300, 300);
+//     //ctx.fill();
+    ctx.stroke();
+ctx.closePath();
+ctx.fillStyle = "rgba(0,255,0,0.1)";
+ctx.beginPath();
+    ctx.moveTo(100, 300);
+    ctx.lineTo(200, 200);
+    ctx.lineTo(300, 300);
+    ctx.lineTo(300, 400);
+    ctx.lineTo(100, 400);
+ctx.fill();
+ctx.closePath();
+
 </script>
