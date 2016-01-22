@@ -28,7 +28,7 @@ window.drawSparkline = (values, options={}) ->
   [options.startX, options.startY, options.width, options.height, options.lineColor, options.lineWidth, options.shadowColor]
 
   [maxV, minV] = findMaxMin(values)
-  stepX = width / values.length  # every x would be offsetX*(index of x+1)
+  stepX = width / (values.length-1)  # every x would be offsetX*(index of x+1)
   stepY = height / (maxV - minV)  # every y would be offsetY*(y-min)
 
   canvas=document.createElement("canvas")
@@ -46,9 +46,10 @@ window.drawSparkline = (values, options={}) ->
   #ctx.moveTo(coords[0][0], coords[0][1])
   firstX = lastX = 0
   for i in [0...values.length] by 1 # draw the line from old day to new day
-    i = values.length - 1 - i
+    i = values.length - i
     x = startX + stepX * i
     y = startY + stepY * (maxV - values[i]) + 2
+    #ctx.arc(x, y, 1, 0, 360, true)
     ctx.lineTo(x, y)
   ctx.stroke()
   ctx.lineTo(x, startY + height + 5)  # draw lines from right to left, so this x is the last x
