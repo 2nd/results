@@ -9,7 +9,7 @@ defaultOptions ={
 	lineColor: "rgb(0, 0, 240)"
 	dotColor: "rgba(240, 128, 0, 1)"
 	shadeColor: "rgba(192, 208, 240, 1)"
-	shadow: false
+	shadow: true
 	shadowColor: "rgba(192, 208, 240, 1)"
 	verticalLineColor: "rgba(240, 32, 32, 1)"
 	bigDotColor: "rgba(80, 240, 80, 1)"
@@ -20,7 +20,7 @@ defaultOptions ={
 }
 
 class Sparkline
-	constructor: (canvasId, @data, options = {}) ->
+	constructor: (canvasId, 	@data, options = {}) ->
 		options[k] ?= v for k, v of defaultOptions
 		{@height, @width, @dots, @shadeStart, @shadeEnd, @lineColor, @dotColor, @shadeColor, @shadow, @shadowColor, @verticalLineColor, @bigDotColor, @verticalDashDist, @background, @backgroundColor, @textColor} = options
 
@@ -33,24 +33,21 @@ class Sparkline
 		@leftSpace = @bigDotSize
 		@rightSpace = @height * 0.14 * 4
 
-		console.log "parameter done"
 		# define basic characristics of sparkline
 		@ys = @scaleY(@data)
-		console.log @ys
-		# @portions = @calculatePortions(@data)
+		@portions = @calculatePortions(@data)
 		@lastPortion = 0
 		@canvas = document.getElementById(canvasId)
 		@canvas.height = @height
 		@canvas.width = @width
-		console.log @canvas
 
 		# set screen resolution accroding to different device.
-		# @ratio = @scaleScreen(@canvas)
+		@ratio = @scaleScreen(@canvas)
 		@ctx = @canvas.getContext('2d')
-		# @ctx.scale(@ratio, @ratio);
+		@ctx.scale(@ratio, @ratio);
 
 		# draw sparkline
-		# @canvas.addEventListener('mousemove', @mouseEvent)
+		@canvas.addEventListener('mousemove', @mouseEvent)
 		@drawSparkline()
 
 	scaleY: =>
@@ -62,142 +59,132 @@ class Sparkline
 			ys.push (@height-@downSpace) - (@data[i]-min) / ystep
 		return ys
 
-	# scaleScreen: (@canvas) =>
-	# 	ctx = @canvas.getContext('2d')
-	# 	devicePixelRatio = window.devicePixelRatio
-	# 	backingStoreRatio = ctx.webkitBackingStorePixelRatio ||ctx.mozBackingStorePixelRatio ||ctx.msBackingStorePixelRatio ||ctx.oBackingStorePixelRatio ||ctx.backingStorePixelRatio || 1
-	# 	ratio = devicePixelRatio / backingStoreRatio
-	# 	if devicePixelRatio != backingStoreRatio
- #        	oldWidth = @canvas.width;
- #        	oldHeight = @canvas.height;
- #        	@canvas.width = Math.round(oldWidth * ratio);
- #        	@canvas.height = Math.round(oldHeight * ratio);
- #        	@canvas.style.width = oldWidth + 'px';
- #        	@canvas.style.height = oldHeight + 'px';
- #        return ratio
+	scaleScreen: (@canvas) =>
+		ctx = @canvas.getContext('2d')
+		devicePixelRatio = window.devicePixelRatio
+		backingStoreRatio = ctx.webkitBackingStorePixelRatio ||ctx.mozBackingStorePixelRatio ||ctx.msBackingStorePixelRatio ||ctx.oBackingStorePixelRatio ||ctx.backingStorePixelRatio || 1
+		ratio = devicePixelRatio / backingStoreRatio
+		if devicePixelRatio != backingStoreRatio
+        	oldWidth = @canvas.width;
+        	oldHeight = @canvas.height;
+        	@canvas.width = Math.round(oldWidth * ratio);
+        	@canvas.height = Math.round(oldHeight * ratio);
+        	@canvas.style.width = oldWidth + 'px';
+        	@canvas.style.height = oldHeight + 'px';
+        return ratio
 
 	drawSparkline: =>
-		console.log "start sparkline"
 		number = @data.length
-		console.log number
 		xstep = (@width-@leftSpace-@rightSpace) / (number-1)
 		ctx = @ctx
-		console.log ctx
 
-		console.log "start to clear"
 		ctx.clearRect(0, 0, @canvas.width, @canvas.height)
-		console.log "end clear"
-		# if @background
-		# 	ctx.fillStyle = @backgroundColor
-		# 	ctx.rect(@leftSpace,0,@width-@rightSpace-@leftSpace,@height)
-		# 	ctx.fill()
 
-		# if @shadow
-		# 	ctx.beginPath()
-		# 	ctx.fillStyle = @shadowColor
-		# 	ctx.moveTo(@leftSpace, @height)
-		# 	for i in [0...number] by 1
-		# 		x = xstep * i + @leftSpace
-		# 		y = @ys[i]
-		# 		ctx.lineTo(x, y)
-		# 	ctx.lineTo(x, @height)
-		# 	ctx.lineTo(0, @height)
-		# 	ctx.fill()
+		if @background
+			ctx.beginPath()
+			ctx.fillStyle = @backgroundColor
+			ctx.rect(@leftSpace,0,@width-@rightSpace-@leftSpace,@height)
+			ctx.fill()
 
-		# if @shadeStart
-		# 	ctx.beginPath()
-		# 	ctx.fillStyle = @shadeColor
-		# 	ctx.moveTo(xstep * (@shadeStart-1), @height)
-		# 	for i in [(@shadeStart-1)...@shadeEnd] by 1
-		# 		x = xstep * i + @leftSpace
-		# 		y = @ys[i]
-		# 		ctx.lineTo(x, y)
-		# 	ctx.lineTo(x, @height)
-		# 	ctx.lineTo(xstep * (@shadeStart-1) + @leftSpace, @height)
-		# 	ctx.fill()
+		if @shadow
+			ctx.beginPath()
+			ctx.fillStyle = @shadowColor
+			ctx.moveTo(@leftSpace, @height)
+			for i in [0...number] by 1
+				x = xstep * i + @leftSpace
+				y = @ys[i]
+				ctx.lineTo(x, y)
+			ctx.lineTo(x, @height)
+			ctx.lineTo(0, @height)
+			ctx.fill()
+
+		if @shadeStart
+			ctx.beginPath()
+			ctx.fillStyle = @shadeColor
+			ctx.moveTo(xstep * (@shadeStart-1), @height)
+			for i in [(@shadeStart-1)...@shadeEnd] by 1
+				x = xstep * i + @leftSpace
+				y = @ys[i]
+				ctx.lineTo(x, y)
+			ctx.lineTo(x, @height)
+			ctx.lineTo(xstep * (@shadeStart-1) + @leftSpace, @height)
+			ctx.fill()
 
 		ctx.beginPath()
-		console.log "beginPath"
-		ctx.setLineDash([0])
-		console.log "setDash"
+		# ctx.setLineDash([0]);
 		ctx.lineWidth = @lineWidth
 		ctx.strokeStyle = @lineColor
-		console.log "setColor"
 		ctx.moveTo(@leftSpace, @ys[0]) 
-		console.log "firstDot"
 		for i in [1...number] by 1
-			console.log i
 			x = xstep * i + @leftSpace
 			y = @ys[i] 
 			ctx.lineTo(x, y)
-			console.log "line done"
 		ctx.stroke()
-		console.log "stroke"
 
-		# if @dots
-		# 	for dot in @dots
-		# 		ctx.beginPath()
-		# 		ctx.fillStyle = @dotColor
-		# 		ctx.arc(xstep * dot + @leftSpace, @ys[dot], @dotSize, 0, 2 * Math.PI)
-		# 		ctx.fill()
+		if @dots
+			for dot in @dots
+				ctx.beginPath()
+				ctx.moveTo(xstep * dot + @leftSpace, @ys[dot])
+				ctx.fillStyle = @dotColor
+				ctx.arc(xstep * dot + @leftSpace, @ys[dot], @dotSize, 0, 2 * Math.PI)
+				ctx.fill()
 
 		return ctx
 
 	# add mouse event
-	# getMousePos: (evt) =>
-	# 	rect = @canvas.getBoundingClientRect()
-	# 	return {
-	# 		x: evt.clientX - rect.left
-	# 		y: evt.clientY - rect.top
-	# 	}
+	getMousePos: (evt) =>
+		rect = @canvas.getBoundingClientRect()
+		return {
+			x: evt.clientX - rect.left
+			y: evt.clientY - rect.top
+		}
 
-	# mouseEvent: (evt) =>
-	# 	mousePos = @getMousePos(evt)
-	# 	for i in [0...@portions.length] by 1
-	# 		portion = @portions[i]
-	# 		if mousePos.x < portion[0]
-	# 			x = portion[1]
-	# 			message = @data[i]
-	# 			break
+	mouseEvent: (evt) =>
+		mousePos = @getMousePos(evt)
+		for i in [0...@portions.length] by 1
+			portion = @portions[i]
+			if mousePos.x < portion[0]
+				x = portion[1]
+				message = @data[i]
+				break
 
-	# 	return if x == @lastPortion
-	# 	@lastPortion = x
-	# 	ctx = @drawSparkline()	
-	# 	ctx.lineWidth = @lineWidth * 0.3
+		return if x == @lastPortion
+		@lastPortion = x
+		ctx = @drawSparkline()	
+		ctx.lineWidth = @lineWidth * 0.3
 
-	# 	#ctx.font = @height*0.14 + "pt Calibri";
-	# 	#ctx.fillStyle = @textColor #"rgba(80, 240, 80, 1)"
-	# 	#ctx.fillText(message, x+2, @height * 0.2) #@height * 0.2
-	# 	#ctx.fill()
+		ctx.beginPath()
+		ctx.font = @height*0.14 + "pt Calibri";
+		ctx.fillStyle = @textColor #"rgba(80, 240, 80, 1)"
+		ctx.fillText(message, x+2, @height * 0.2) #@height * 0.2
+		ctx.fill()
 
-	# 	ctx.strokeStyle = @verticalLineColor
-	# 	ctx.setLineDash([@verticalDashDist])
-	# 	ctx.moveTo(x, 0)
-	# 	ctx.lineTo(x, @height)
-	# 	ctx.stroke()
+		ctx.beginPath()
+		ctx.strokeStyle = @verticalLineColor
+		ctx.save()
+		ctx.setLineDash([@verticalLineDashDist])
+		ctx.moveTo(x, 0)
+		ctx.lineTo(x, @height)
+		ctx.stroke()
+		ctx.restore()
 
-	# 	ctx.beginPath()
-	# 	ctx.arc(x, @ys[i], @bigDotSize, 0, 2 * Math.PI)
-	# 	ctx.fillStyle = @bigDotColor
-	# 	ctx.fill()
+		ctx.beginPath()
+		ctx.arc(x, @ys[i], @bigDotSize, 0, 2 * Math.PI)
+		ctx.fillStyle = @bigDotColor
+		ctx.fill()
 
-	# calculatePortions: (data) =>
-	# 	step = (@width-@leftSpace-@rightSpace) / (@data.length - 1)
-	# 	offset = step / 2
-	# 	portions = []
-	# 	sums = @leftSpace
-	# 	for i in [0...@data.length] by 1
-	# 		if i == 0
-	# 			sums = sums + step / 2
-	# 		else 
-	# 			sums = sums + step
-	# 		portions.push [sums, sums - offset]
-	# 	console.log portions
-	# 	return portions
-
+	calculatePortions: (data) =>
+		step = (@width-@leftSpace-@rightSpace) / (@data.length - 1)
+		offset = step / 2
+		portions = []
+		sums = @leftSpace
+		for i in [0...@data.length] by 1
+			if i == 0
+				sums = sums + step / 2
+			else 
+				sums = sums + step
+			portions.push [sums, sums - offset]
+		console.log portions
+		return portions
 
 window.Sparkline = Sparkline
-
-
-
-		
