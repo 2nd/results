@@ -178,6 +178,7 @@ class Sparkline
 			else 
 				sums = sums + step
 			portions.push [sums, sums - offset]
+		console.log portions
 		return portions
 
 
