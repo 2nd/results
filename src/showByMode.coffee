@@ -5,6 +5,9 @@ locale =
   weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 dateFilter = 'day'
 
+# data [1345, 1267, 1178, 891, 1349, 1567, 1891, 1921, 2045, 2102, 2391, 2197, 1899, 1456, 1209, 781, 567, 344]
+
+
 class ResultShow
   constructor: (@ele) ->
 
@@ -62,6 +65,8 @@ class ResultShow
     for column in @columns
       element = document.getElementById(column)
       element.appendChild(sparklines[tempKey][column])
+      new Sparkline(sparklines[tempKey][column], input.groups[tempKey][column], null)
+
 
   buildHeader: (d, header) ->
     '<tr><th class=filter>' + locale.months[d.getMonth()] + ' ' + d.getFullYear() + header
