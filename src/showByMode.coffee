@@ -65,7 +65,7 @@ class ResultShow
     for column in @columns
       element = document.getElementById(column)
       element.appendChild(sparklines[tempKey][column])
-      new Sparkline(sparklines[tempKey][column], input.groups[tempKey][column], null)
+      new Sparkline(sparklines[tempKey][column], input.groups[tempKey][column].reverse(), null)
 
 
   buildHeader: (d, header) ->

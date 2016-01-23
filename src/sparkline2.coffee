@@ -1,20 +1,20 @@
 defaultOptions ={
+  height: 50
+  width: 600
   dots: false  # an array of data index, indicates which dots are highlighted.
+  lineColor: "rgb(0, 0, 240)"
   dotColor: "rgba(240, 128, 0, 1)"
+  shadow: true
+  shadowColor: "rgba(192, 208, 240, 1)"
+  verticalLineColor: "rgba(240, 32, 32, 1)"
+  bigDotColor: "rgba(80, 240, 80, 1)"
+  background: false
   backgroundColor: "yellow"
   textColor: "black"
-  height: 20
-  width: 60
-  background: false
-  lineColor: "rgba(0,150,0,0.8)"
-  shadow: true
-  shadowColor: "rgba(0,255,0,0.1)"
-  verticalLineColor: "darkgreen"
-  bigDotColor: "darkgreen"
 }
 
 class Sparkline
-  constructor: (@canvas, @data, options = {}) ->
+  constructor: (canvasId, @data, options = {}) ->
     options[k] ?= v for k, v of defaultOptions
     {@height, @width, @dots, @lineColor, @dotColor, @shadow, @shadowColor, @verticalLineColor, @bigDotColor, @background, @backgroundColor, @textColor} = options
 
@@ -31,6 +31,7 @@ class Sparkline
     @ys = @scaleY(@data)
     @portions = @calculatePortions(@data)
     @lastPortion = 0
+    @canvas = document.getElementById(canvasId)
     @canvas.height = @height
     @canvas.width = @width
 
@@ -38,7 +39,7 @@ class Sparkline
     @ratio = @scaleScreen(@canvas)
     @ctx = @canvas.getContext('2d')
     @ctx.scale(@ratio, @ratio)
-
+    console.log @ratio
     # draw sparkline
     @canvas.addEventListener('mousemove', @mouseEvent)
     @drawSparkline()
@@ -52,7 +53,7 @@ class Sparkline
       else
         min = value if value < min
 
-    ystep = (max - min) * 1.1 / (@height-@upSpace-@downSpace)
+    ystep = (max-min)*1.1 / (@height-@upSpace-@downSpace)
     ys = []
     for i in [0...@data.length] by 1
       ys.push (@height-@downSpace) - (@data[i]-min) / ystep
@@ -162,11 +163,3 @@ class Sparkline
     return portions
 
 window.Sparkline = Sparkline
-
-window.getSparklines = (data) ->
-  # sparkline for each column except the filter column
-  sparklines = {}
-  for key, group of data.groups
-    keyed = sparklines[key] = {}
-    keyed[column] = document.createElement("canvas") for column, values of group
-  return sparklines
