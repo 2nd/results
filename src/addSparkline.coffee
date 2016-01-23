@@ -31,7 +31,7 @@ window.drawSparkline = (values, options={}) ->
   stepX = width / (values.length-1)  # every x would be offsetX*(index of x+1)
   stepY = height / (maxV - minV)  # every y would be offsetY*(y-min)
 
-  canvas=document.createElement("canvas")
+  canvas = document.createElement("canvas")
   # define the height and width
   canvas.height = startY + height + 10
   canvas.width = startX + width
