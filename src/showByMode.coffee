@@ -39,6 +39,7 @@ class Sparkline
     @portions = @calculatePortions(@data)
     @lastPortion = 0
     @canvas = document.getElementById(canvasId)
+    console.log "@canvas:  "+ @canvas
     @canvas.height = @height
     @canvas.width = @width
 
@@ -89,36 +90,39 @@ class Sparkline
     if @shadow
       ctx.beginPath()
       ctx.fillStyle = @shadowColor
-      ctx.moveTo(@leftSpace, @height)
-      for i in [0...number] by 1
-        x = xstep * i + @leftSpace
-        y = @ys[i]
+      ctx.moveTo(xstep * (number-i) + @leftSpace, @ys[0])
+      for i in [1...number] by 1
+        x = xstep * (number-i) + @leftSpace
+        y = @ys[i]  
         ctx.lineTo(x, y)
-      ctx.lineTo(x, @height)
-      ctx.lineTo(0, @height)
+      #ctx.lineTo(x, @height)
+      ctx.lineTo(xstep + @leftSpace, @height)
+      ctx.lineTo(xstep * (number-1) + @leftSpace, @height)
       ctx.fill()
 
     if @shadeStart
       ctx.beginPath()
       ctx.fillStyle = @shadeColor
-      ctx.moveTo(xstep * (@shadeStart-1), @height)
-      for i in [(@shadeStart-1)...@shadeEnd] by 1
-        x = xstep * i + @leftSpace
+      ctx.moveTo(xstep * (number-i) + @leftSpace, @ys[0])
+      for i in [1...number] by 1
+        x = xstep * (number-i) + @leftSpace
         y = @ys[i]
         ctx.lineTo(x, y)
-      ctx.lineTo(x, @height)
-      ctx.lineTo(xstep * (@shadeStart-1) + @leftSpace, @height)
+      #ctx.lineTo(x, @height)
+      ctx.lineTo(xstep + @leftSpace, @height)
+      ctx.lineTo(xstep * (number-1) + @leftSpace, @height)
       ctx.fill()
 
     ctx.beginPath()
     #ctx.setLineDash([1]);
     ctx.lineWidth = @lineWidth
     ctx.strokeStyle = @lineColor
-    ctx.moveTo(@leftSpace, @ys[0]) 
+    #ctx.moveTo(xstep * (number-1-i) + @leftSpace, @ys[0]) 
     for i in [1...number] by 1
-      x = xstep * i + @leftSpace
-      y = @ys[i] 
+      x = xstep * (number-i) + @leftSpace
+      y = @ys[i]
       ctx.lineTo(x, y)
+
     ctx.stroke()
 
     if @dots
@@ -138,12 +142,13 @@ class Sparkline
     }
 
   mouseEvent: (evt) =>
+    number = @data.length
     mousePos = @getMousePos(evt)
     for i in [0...@portions.length] by 1
       portion = @portions[i]
       if mousePos.x < portion[0]
         x = portion[1]
-        message = @data[i]
+        message = @data[number-i]
         break
 
     return if x == @lastPortion
@@ -151,9 +156,9 @@ class Sparkline
     ctx = @drawSparkline()  
     ctx.lineWidth = @lineWidth * 0.3
 
-    #ctx.font = @height*0.14 + "pt Calibri";
-    #ctx.fillStyle = @textColor #"rgba(80, 240, 80, 1)"
-    #ctx.fillText(message, x+2, @height * 0.2) #@height * 0.2
+    ctx.font = @height*0.14 + "pt Calibri";
+    ctx.fillStyle = @textColor #"rgba(80, 240, 80, 1)"
+    ctx.fillText(message, x+2, @height * 0.2) #@height * 0.2
     #ctx.fill()
 
     ctx.strokeStyle = @verticalLineColor
@@ -164,7 +169,7 @@ class Sparkline
 
     ctx.beginPath()
     ctx.setLineDash([1])
-    ctx.arc(x, @ys[i], @bigDotSize, 0, 2 * Math.PI)
+    ctx.arc(x, @ys[number-i], @bigDotSize, 0, 2 * Math.PI)
     ctx.fillStyle = @bigDotColor
     ctx.fill()
 
@@ -298,8 +303,11 @@ class ResultShow
         
       length = sparkValue.length
       range = max - min
-      currentCanvas = document.createElement("currentCanvas")
+      currentCanvas = document.createElement("canvas")
       currentCanvas.id = columnkeys
+      tmp = document.getElementById("canvasGraph")
+      tmp.appendChild(currentCanvas)
+      console.log "currentCanvas.id:   "+currentCanvas.id
       new Sparkline(columnkeys,sparkValue,defaultOptions)
 
       # canvas.width = width
