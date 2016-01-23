@@ -44,16 +44,16 @@ window.drawSparkline = (values, options={}) ->
   ctx.fillStyle = shadowColor
   ctx.beginPath()
   #ctx.moveTo(coords[0][0], coords[0][1])
-  firstX = lastX = 0
-  for i in [0...values.length] by 1 # draw the line from old day to new day
-    i = values.length - i
+  # draw the line from bottom left to top right
+  for i in [0...values.length-1] by 1 # draw the line from old day to new day
     x = startX + stepX * i
+    i = values.length - 1 - i
     y = startY + stepY * (maxV - values[i]) + 2
     #ctx.arc(x, y, 1, 0, 360, true)
     ctx.lineTo(x, y)
   ctx.stroke()
   ctx.lineTo(x, startY + height + 5)  # draw lines from right to left, so this x is the last x
-  ctx.lineTo(startX + width, startY + height + 5) # draw lines from right to left, so this x is the first x
+  ctx.lineTo(startX, startY + height + 5) # draw lines from right to left, so this x is the first x
   ctx.fill()
   ctx.closePath()
   return canvas
@@ -63,5 +63,5 @@ window.getSparklines = (data) ->
   sparklines = {}
   for key, group of data.groups
     keyed = sparklines[key] = {}
-    keyed[column] = drawSparkline(values, {startX:0, startY:0, width:80, height:30, lineColor:'green', shadowColor:"rgba(0,255,0,0.1)"}) for column, values of group
+    keyed[column] = drawSparkline(values, {startX:0, startY:0, width:80, height:40, lineColor:'green', shadowColor:"rgba(0,255,0,0.1)"}) for column, values of group
   return sparklines
