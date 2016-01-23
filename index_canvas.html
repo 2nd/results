@@ -9,15 +9,45 @@
 <script src="sample1.js"></script>
 <script src="sample2.js"></script>
 <script src="sample3.js"></script>
-
+<body>
 <table id=results></table>
+<canvas id="tutorial" width="150" height="150"> hello </canvas>
+
 <script>
 // var data = window.build(sample1)
 // var modes = window.calculateTrend(data);
 // var sparklines = window.getSparklines(data);
 // results1 = new window.ResultShow(document.getElementById('results'));
 // results1.showByMode(data, modes, sparklines)
+canvas = document.getElementById("tutorial");
+canvas.height = 80;
+canvas.width = 100;
+ctx = canvas.getContext('2d');
+ctx.strokeStyle = 'darkgreen';
+//ctx.beginPath();
+ctx.moveTo(0, 0);
+ctx.lineTo(80, 20);
+ctx.lineTo(20, 30)
+//ctx.closePath();
+
+ctx.stroke();
+ctx.fill();
 
 
+function draw() {
+  var canvas = document.getElementById('tutorial');
+  if (canvas.getContext){
+    var ctx = canvas.getContext('2d');
+
+    ctx.beginPath();
+    ctx.moveTo(75,50);
+    ctx.lineTo(100,75);
+    ctx.lineTo(100,25);
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+//draw()
 
 </script>
+</body>
